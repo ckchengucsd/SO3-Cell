@@ -43,9 +43,6 @@ with open(args.cdl, 'r') as f:
 ########################################################## user define
 # for placement
 unit_fin = 2
-#with open('../PROBE_2F.cdl', 'r') as f: # input file
-with open('../cdl/SO3_L1.cdl', 'r') as f: # input file
-    lines = f.readlines()
 subckt_name     = cell_name
 dummy_for_ideal = int(args.dummy_for_ideal)
 dummy_padding   = int(args.dummy_padding)

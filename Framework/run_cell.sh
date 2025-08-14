@@ -8,7 +8,7 @@ PYTHON="${PYTHON:-python3}"
 RUNNER="$ROOT/bin/run_cell.py"
 
 # Base setting (modify whaever you want)
-CDL="${CDL:-$ROOT/../cdl/SO3_L1.cdl}"
+CDL="${CDL:-$ROOT/../Enablement/cdl/SO3_L1.cdl}"
 GDS_OUT="${GDS_OUT:-gds_result}"
 DUMMY_FOR_IDEAL="${DUMMY_FOR_IDEAL:-0}"
 DUMMY_PADDING="${DUMMY_PADDING:-0}"
