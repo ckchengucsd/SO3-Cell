@@ -34,7 +34,7 @@ If you are a student or a member of a university faculty, Gurobi provides a **fr
 Install the required Python packages using pip:
 
 ```bash
-pip install gurobipy numpy
+pip install gurobipy
 ```
 
 ## Running the Framework
