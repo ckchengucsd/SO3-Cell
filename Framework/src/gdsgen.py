@@ -1,6 +1,5 @@
 from pprint import pprint
 import pya
-import numpy as np
 import sys
 import re
 import os, json

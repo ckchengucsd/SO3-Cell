@@ -77,7 +77,7 @@ def pr(*args, sep=" ", end="\n"):
     global _log
     if _log is None:
         import atexit
-        _log = open(subckt_name, "a", encoding="utf-8", buffering=1)  # line-buffered
+        _log = open(subckt_name, "w", encoding="utf-8", buffering=1)  # line-buffered
         atexit.register(_log.close)
 
     s = sep.join(str(a) for a in args)
