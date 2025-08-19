@@ -1,5 +1,7 @@
 # SO3-Cell: Standard Cell Layout Automation Framework for Simultaneous Optimization of Topology, Placement, and Routing
 
+![SO3 Framework](./Framework.png)
+
 This repository is a comprehensive collection of assets for the **SO3 standard cell generation framework**, including its source code and a full set of pre-generated library views.
 
 The repository structure is as follows:
