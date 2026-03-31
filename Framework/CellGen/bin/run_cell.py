@@ -4,8 +4,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC  = ROOT / "src"
-RESULTS_ROOT = ROOT / "results"
-LOGS_ROOT = ROOT / "logs"
 
 def main():
     ap = argparse.ArgumentParser(description="Run ILP + KLayout GDS generation")
@@ -41,8 +39,7 @@ def main():
 
     # Decide ILP script if user didn't override
     if not args.ilp_script:  # None or empty string
-        # Unified entrypoint that dispatches to SH/DH internally
-        ilp_script = str(SRC / "ILP_SO3_flex.py")
+        ilp_script = str(SRC / ("ILP_SO3_DH_flex.py" if args.arch == "DH" else "ILP_SO3_SH_flex.py"))
     else:
         ilp_script = args.ilp_script  # honor explicit override
 
@@ -56,24 +53,7 @@ def main():
     for cell in cells:
         base_name = cell
         out_name  = derive_out_name(base_name, args.arch, args.mh_order)
-
-        # Prepare output/log locations per cell
-        ilp_result_dir = RESULTS_ROOT / "ilp" / out_name
-        ilp_result_dir.mkdir(parents=True, exist_ok=True)
-        gurobi_log_dir = LOGS_ROOT / "gurobi" / out_name
-        gurobi_log_dir.mkdir(parents=True, exist_ok=True)
-        model_dump_prefix = LOGS_ROOT / "models" / out_name / out_name
-        model_dump_prefix.parent.mkdir(parents=True, exist_ok=True)
-
-        ilp_out_path = ilp_result_dir / out_name
-        cells_out.append(str(ilp_out_path))
-
-        env = os.environ.copy()
-        env["GUROBI_DUMP_MODEL"] = str(model_dump_prefix)
-        # Ensure Python finds src modules
-        env["PYTHONPATH"] = os.pathsep.join(
-            [str(SRC)] + ([env["PYTHONPATH"]] if env.get("PYTHONPATH") else [])
-        )
+        cells_out.append(out_name)
 
         ilp_cmd = [
             args.python, ilp_script,
@@ -88,22 +68,7 @@ def main():
         if args.arch == "DH":
             ilp_cmd += ["--mh-order", args.mh_order]
         print("[RUN] ", " ".join(ilp_cmd))
-        subprocess.run(ilp_cmd, check=True, cwd=str(ROOT), env=env)
-
-        # Move ILP outputs into organized folders
-        ilp_out_file = ROOT / out_name
-        if ilp_out_file.exists():
-            try:
-                ilp_out_file.replace(ilp_out_path)
-            except OSError:
-                pass
-        gurobi_log = ROOT / "gurobi.log"
-        if gurobi_log.exists():
-            target = gurobi_log_dir / "gurobi.log"
-            try:
-                gurobi_log.replace(target)
-            except OSError:
-                pass
+        subprocess.run(ilp_cmd, check=True)
 
     cfg = {
         "output_dir": args.gds_out,

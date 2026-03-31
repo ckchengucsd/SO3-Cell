@@ -80,11 +80,7 @@ ARCH=DH MH_ORDER=N_FIRST ./run_cell.sh --cdl-name SO3_L1 --cells "NAND2_X1"
 ARCH=DH MH_ORDER=P_FIRST ./run_cell.sh --cdl-name SO3_L1 --cells "NAND2_X1"
 ```
 
-`run_cell.sh` wraps `bin/run_cell.py` (unified dispatcher `src/ILP_SO3_flex.py`), sets `PYTHONPATH` to include `Framework/CellGen/src`, and organizes outputs:
-- `results/gds/` : GDS files emitted by KLayout (`.gds`). Default destination; override with `GDS_OUT`.
-- `results/ilp/<cell>/<cell>` : ILP textual result per cell (solver summary, placement, routing info).
-- `logs/gurobi/<cell>/gurobi.log` : Gurobi solver log per cell.
-- `logs/models/<cell>/<cell>.lp|.mps|.prm` : ILP model snapshots (`.lp` human-readable, `.mps` exact) and parameter file (`.prm`) for reproducibility.
+`run_cell.sh` wraps `bin/run_cell.py`, which selects the appropriate ILP solver script (`src/ILP_SO3_SH_flex.py` for single-height, `src/ILP_SO3_DH_flex.py` for double-height) based on the `--arch` option.
 
 ### Standard Cell Verification and Characterization
 In this part, LVS/PEX and cell characterization are performed for the generated standard cells.
