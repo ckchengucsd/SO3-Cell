@@ -902,7 +902,7 @@ class ViaLayerInfo:
                 # Decide row mapping by mh_order (avoid using the name 'list')
                 # N_FIRST: h1 -> rows 2,3 ; h2 -> rows 0,1
                 # P_FIRST: h1 -> rows 0,1 ; h2 -> rows 2,3
-                if mh_order == "P_FIRST":
+                if mh_order == "N_FIRST":
                     row_map = [[0, 1], [2, 3]]
                 else:
                     row_map = [[2, 3], [0, 1]]

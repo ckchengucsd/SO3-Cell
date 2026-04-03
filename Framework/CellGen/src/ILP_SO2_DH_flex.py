@@ -6,7 +6,6 @@ from gurobipy import GRB
 import time, math
 import argparse
 from pathlib import Path
-from ilp_pnr_function import *
 
 model = gp.Model("transistor_placement")
 model.setParam('OutputFlag', 1)  # Suppress Gurobi output
@@ -59,7 +58,6 @@ dummy_col = int(dummy_for_ideal + dummy_padding)
 misalign_col    = int(args.misalign_col)
 power_net={'VDD','VSS'}
 # for routing
-routing_switch = 'on'
 bbox = 1 # bounding box for routing
 MAX_TRACK = 4 # TRACK DEFINE : 5,4,3,2
 upper_rows=[7,5] # [7,6,5,4] m2 4track, [5,4,3] # m2 3track, [9,8,7,6,5] # m2 5track, [3,2] # m2 2track
@@ -381,36 +379,6 @@ shared_sd = extract_shared_net(2, 3, top_trans, bot_trans)
 #print(shared_sd,extract_shared_net(3, top_trans, bot_trans),extract_shared_net(2, top_trans, bot_trans))
 #print(shared_sd)
 
-total_pmos_sd_nets = (set(net for t in top_trans for net in [t[2], t[3]]))
-total_nmos_sd_nets = (set(net for t in bot_trans for net in [t[2], t[3]]))
-total_nets = (
-    set(net for t in top_trans for net in [t[1], t[2], t[3]]) | 
-    set(net for t in bot_trans for net in [t[1], t[2], t[3]])
-)
-#print(total_nets)
-#print(total_pmos_sd_nets)
-#print(total_nmos_sd_nets)
-
-# Circuit Topology Optimization
-print (f"------------")
-print (f"analyze PMOS")
-final_hierarchy_pmos = split_sets_by_paths_2(top_trans, 'VDD', shared_sd, total_pmos_sd_nets)
-pmos_network={}
-pmos_source={}
-pmos_drain={}
-add_constraints_recursive(model, final_hierarchy_pmos, pmos_network, pmos_source, pmos_drain)
-
-print (f"------------")
-print (f"analyze NMOS")
-final_hierarchy_nmos = split_sets_by_paths_2(bot_trans, 'VSS', shared_sd, total_nmos_sd_nets)
-nmos_network={}
-nmos_source={}
-nmos_drain={}
-add_constraints_recursive(model, final_hierarchy_nmos, nmos_network, nmos_source, nmos_drain)
-
-final_pmos_net_info=build_final_variables_and_constraints(pmos_source,pmos_drain,model)
-final_nmos_net_info=build_final_variables_and_constraints(nmos_source,nmos_drain,model)
-
 # Create gate_cols with even numbers starting from 2
 gate_cols={}
 for h in height:
@@ -512,16 +480,10 @@ for i,t in enumerate(top_trans):
     for h in height:
         for c in gate_cols[h] :
             model.addConstr(c_top[(i, h, c, 0)] + c_top[(i, h, c, 1)] <= pmos_net[(G, h, c)],name=f"pmos_net_G_{name}_h_{h}_col_{c}_o")
-            for key in final_pmos_net_info[t]['source']:
-                model.addConstr(c_top[(i, h, c, 0)] + final_pmos_net_info[t]['source'][key] - 1 <= pmos_net[(key, h, c - 1)],name=f"pmos_net_S_{name}_h_{h}_col_{c-1}_o0")
-                model.addConstr(c_top[(i, h, c, 1)] + final_pmos_net_info[t]['source'][key] - 1 <= pmos_net[(key, h, c + 1)],name=f"pmos_net_S_{name}_h_{h}_col_{c+1}_o1")
-            for key in final_pmos_net_info[t]['drain']:
-                model.addConstr(c_top[(i, h, c, 0)] + final_pmos_net_info[t]['drain'][key] - 1 <= pmos_net[(key, h, c + 1)],name=f"pmos_net_D_{name}_h_{h}_col_{c+1}_o0")
-                model.addConstr(c_top[(i, h, c, 1)] + final_pmos_net_info[t]['drain'][key] - 1 <= pmos_net[(key, h, c - 1)],name=f"pmos_net_D_{name}_h_{h}_col_{c-1}_o1")
-            #model.addConstr(c_top[(i, h, c, 0)] <= pmos_net[(S, h, c - 1)],name=f"pmos_net_S_{name}_h_{h}_col_{c-1}_o0")
-            #model.addConstr(c_top[(i, h, c, 0)] <= pmos_net[(D, h, c + 1)],name=f"pmos_net_D_{name}_h_{h}_col_{c+1}_o0")
-            #model.addConstr(c_top[(i, h, c, 1)] <= pmos_net[(D, h, c - 1)],name=f"pmos_net_D_{name}_h_{h}_col_{c-1}_o1")
-            #model.addConstr(c_top[(i, h, c, 1)] <= pmos_net[(S, h, c + 1)],name=f"pmos_net_S_{name}_h_{h}_col_{c+1}_o1")
+            model.addConstr(c_top[(i, h, c, 0)] <= pmos_net[(S, h, c - 1)],name=f"pmos_net_S_{name}_h_{h}_col_{c-1}_o0")
+            model.addConstr(c_top[(i, h, c, 0)] <= pmos_net[(D, h, c + 1)],name=f"pmos_net_D_{name}_h_{h}_col_{c+1}_o0")
+            model.addConstr(c_top[(i, h, c, 1)] <= pmos_net[(D, h, c - 1)],name=f"pmos_net_D_{name}_h_{h}_col_{c-1}_o1")
+            model.addConstr(c_top[(i, h, c, 1)] <= pmos_net[(S, h, c + 1)],name=f"pmos_net_S_{name}_h_{h}_col_{c+1}_o1")
 
 for j,t in enumerate(bot_trans):
     name,G,D,S,B,nfin = t
@@ -551,17 +513,10 @@ for j,t in enumerate(bot_trans):
     for h in height:
         for c in gate_cols[h]:
             model.addConstr(c_bot[(j, h, c, 0)] + c_bot[(j, h, c, 1)] <= nmos_net[(G, h, c)],name=f"nmos_net_G_{name}_h_{h}_col_{c}_o")
-            for key in final_nmos_net_info[t]['source']:
-                model.addConstr(c_bot[(j, h, c, 0)] + final_nmos_net_info[t]['source'][key] - 1 <= nmos_net[(key, h, c - 1)],name=f"nmos_net_S_{name}_h_{h}_col_{c-1}_o0")
-                model.addConstr(c_bot[(j, h, c, 1)] + final_nmos_net_info[t]['source'][key] - 1 <= nmos_net[(key, h, c + 1)],name=f"nmos_net_S_{name}_h_{h}_col_{c+1}_o1")
-            for key in final_nmos_net_info[t]['drain']:
-                model.addConstr(c_bot[(j, h, c, 0)] + final_nmos_net_info[t]['drain'][key] - 1 <= nmos_net[(key, h, c + 1)],name=f"nmos_net_D_{name}_h_{h}_col_{c+1}_o0")
-                model.addConstr(c_bot[(j, h, c, 1)] + final_nmos_net_info[t]['drain'][key] - 1 <= nmos_net[(key, h, c - 1)],name=f"nmos_net_D_{name}_h_{h}_col_{c-1}_o1")
-
-            #model.addConstr(c_bot[(j, h, c, 0)] <= nmos_net[(S, h, c - 1)],name=f"nmos_net_S_{name}_h_{h}_col_{c-1}_o0")
-            #model.addConstr(c_bot[(j, h, c, 0)] <= nmos_net[(D, h, c + 1)],name=f"nmos_net_D_{name}_h_{h}_col_{c+1}_o0")
-            #model.addConstr(c_bot[(j, h, c, 1)] <= nmos_net[(D, h, c - 1)],name=f"nmos_net_D_{name}_h_{h}_col_{c-1}_o1")
-            #model.addConstr(c_bot[(j, h, c, 1)] <= nmos_net[(S, h, c + 1)],name=f"nmos_net_S_{name}_h_{h}_col_{c+1}_o1")
+            model.addConstr(c_bot[(j, h, c, 0)] <= nmos_net[(S, h, c - 1)],name=f"nmos_net_S_{name}_h_{h}_col_{c-1}_o0")
+            model.addConstr(c_bot[(j, h, c, 0)] <= nmos_net[(D, h, c + 1)],name=f"nmos_net_D_{name}_h_{h}_col_{c+1}_o0")
+            model.addConstr(c_bot[(j, h, c, 1)] <= nmos_net[(D, h, c - 1)],name=f"nmos_net_D_{name}_h_{h}_col_{c-1}_o1")
+            model.addConstr(c_bot[(j, h, c, 1)] <= nmos_net[(S, h, c + 1)],name=f"nmos_net_S_{name}_h_{h}_col_{c+1}_o1")
 
 # PMOS Row:
 # at most one transistor can be placed in one column
@@ -777,12 +732,10 @@ for h in height:
                 tmp_list.append(ev)
             e_c[h,c] = gp.quicksum(tmp_list)
 
-flow_estimator={}
 for h in height:
     for c in gate_cols[h]:
         track_expr       = a_c[h,c] + b_c[h,c] + (1 + misalign_c[h,c])
         track_ext_expr   = track_expr + e_c[h,c]
-        flow_estimator[h,c] = track_ext_expr
         model.addConstr(track_expr <= MAX_TRACK,name=f"track_limit_h{h}_col{c}")
         model.addConstr(track_ext_expr <= flow_limit,name=f"track_plus_e_limit_h{h}_col{c}")
 
@@ -1038,628 +991,642 @@ for net in total_nets:
         #model.addConstr(gp.quicksum(is_root_node[net,f"pp_{3 + 3 * c}_1"]+is_root_node[net,f"nn_{3 + 3 * c}_1"]+is_root_node[net,f"ac_{3 + 3 * c}_1"]+is_root_node[net,f"pp_{3 + 3 * c}_2"]+is_root_node[net,f"nn_{3 + 3 * c}_2"]+is_root_node[net,f"ac_{3 + 3 * c}_2"]+is_root_node[net,f"ach2_{3 + 3 * c}"]+is_root_node[net,f"ach3p1_{3 + 3 * c}"]+is_root_node[net,f"ach3p2_{3 + 3 * c}"]+is_root_node[net,f"ach4_{3 + 3 * c}"] for c in range(num_cols)) == 1, name=f"one_root_node_enable_{net}")
         #model.addConstr(gp.quicksum(max_indicator[net,f"pp_{3 + 3 * c}_1"]+max_indicator[net,f"nn_{3 + 3 * c}_1"]+max_indicator[net,f"ac_{3 + 3 * c}_1"]+max_indicator[net,f"pp_{3 + 3 * c}_2"]+max_indicator[net,f"nn_{3 + 3 * c}_2"]+max_indicator[net,f"ac_{3 + 3 * c}_2"]+max_indicator[net,f"ach2_{3 + 3 * c}"]+max_indicator[net,f"ach3p1_{3 + 3 * c}"]+max_indicator[net,f"ach3p2_{3 + 3 * c}"]+max_indicator[net,f"ach4_{3 + 3 * c}"] for c in range(num_cols)) == 1, name=f"one_max_indicator_enable_{net}")
 
-        if routing_switch == 'on':
         #f_n_c_r[net] = model.addVars(Edges_m0, rows, lb=-cap, ub=cap, vtype=gp.GRB.INTEGER, name=f"f_{net}_edge_r")
-	        f_n_c_r[net] = {}
-	        f_n_c_ur[net]= {}
-	        #y_n_c_r[net] = model.addVars(Edges_m0, rows, vtype=gp.GRB.BINARY, name=f"y_{net}_edge_r")
-	        y_n_c_r[net] = {}
-	        #flow_cap[net] = model.addVars(Edges_m0, rows, vtype=gp.GRB.INTEGER, name=f"flow_cap_{net}_edge")
-	        #flow_cap2[net] = {}
-	        
-	        # id_detector, io_marker[net]  / # sum_acitves variable is always geq than 1
-	        # sum_actives == 1 -> io_detector is 0 but only when io_marker[net] is 1 -> io_detector is 1
-	        # sum_actives > 1 -> io_detector is 1.
-	        big=len(columns)
-	        io_detector = model.addVar(vtype=gp.GRB.BINARY, name=f"io_detector_{net}") # 1 -> iopin / 0 -> don't care
-	        model.addConstr(big*io_detector >= sum_actives - 1 + io_marker[net],name=f"y_detector_dtermine_lb_{net}_{j}")
-	        model.addConstr(io_detector <= sum_actives - 1 + io_marker[net],name=f"y_detector_dtermine_ub_{net}_{j}")
-	
-	        for edge in Edges_net:
-	            i, j = edge
-	            #print (net,i,j,cap)
-	            var_name = f"y_{net}_edge_connector_{i}_{j}_co"
-	            flow_var_name = f"f_{net}_edge_connector_{i}_{j}_co"
-	            y_n_c_r[net][i, j, 'co'] = model.addVar(vtype=gp.GRB.BINARY, name=var_name)
-	            model.addConstr(y_n_c_r[net][i, j, 'co'] <= indicator_i_vars[net,j], f"on_off_constraint_by_indicator_{net}_{i}_{j}_co")
-	            model.addConstr(y_n_c_r[net][i, j, 'co'] <= io_detector, f"on_off_constraint_by_sum_actives_{net}_{i}_{j}_co")
-	            model.addConstr(y_n_c_r[net][i, j, 'co'] >= indicator_i_vars[net,j]+io_detector-1, f"on_off_constraint_by_mixing_{net}_{i}_{j}_co")
-	            f_n_c_r[net][i, j, 'co'] = model.addVar(lb=-cap, ub=cap, vtype=gp.GRB.CONTINUOUS, name=flow_var_name)
-	            model.addConstr(f_n_c_r[net][i, j, 'co'] <= cap * y_n_c_r[net][i, j, 'co'], name=f'edge_flow_ub_{net}_{i}_{j}_ve')
-	            model.addConstr(f_n_c_r[net][i, j, 'co'] >= -cap * y_n_c_r[net][i, j, 'co'],name=f'edge_flow_lb_{net}_{i}_{j}_ve')
-	        
-	        # MAR !!!
-	        #if io_marker[net] == 1:
-	        for c in range(num_cols) :
-	            positions = get_positions(c,height)
-	            target_list = get_list_set(c,M_MAR,num_cols) # 2 to 3 gear ratio -> divided 3
-	            #print (net,c,target_list)
-	            for key, pos_list in positions.items():
-	                for j in pos_list:
-	                    j_prefix = j.split('_')[0]
-	                    if key != 'mh':
-	                        h = int(j.split('_')[2])
-	                    else :
-	                        h = int(2)
-	                    #print (c, j, j_prefix, target_list, len(target_list))
-	                    if key == 'ac':
-	                        if h == 1:
-	                            target_rows = rows
-	                        elif h == 2:
-	                            target_rows = dh_rows
-	                    elif key == 'pp':
-	                        if h == 1:
-	                            target_rows = pmos_rows
-	                        elif h == 2:
-	                            target_rows = dh_pmos_rows
-	                    elif key == 'nn':
-	                        if h == 1:
-	                            target_rows = nmos_rows
-	                        elif h == 2:
-	                            target_rows = dh_nmos_rows
-	                    elif j_prefix == 'ach2':
-	                        if mh_order == 'P_FIRST':
-	                            target_rows = nmos_rows + dh_nmos_rows
-	                        else : 
-	                            target_rows = pmos_rows + dh_pmos_rows
-	                    elif j_prefix == 'ach3p1':
-	                        if mh_order == 'P_FIRST':
-	                            target_rows = nmos_rows + pmos_rows + dh_nmos_rows
-	                        else : 
-	                            target_rows = nmos_rows + pmos_rows + dh_pmos_rows
-	                        if MAX_TRACK % 2 == 1:
-	                            target_rows = target_rows + middle_row
-	                    elif j_prefix == 'ach3p2':
-	                        if mh_order == 'P_FIRST':
-	                            target_rows = nmos_rows + dh_pmos_rows + dh_nmos_rows
-	                        else : 
-	                            target_rows = pmos_rows + dh_pmos_rows + dh_nmos_rows
-	                        if MAX_TRACK % 2 == 1:
-	                            target_rows = target_rows + dh_middle_row
-	                    elif j_prefix == 'ach4':
-	                        target_rows = rows + dh_rows
-	                    #print (net,j,key,h)
-	                    #print (net,j,target_rows)
-	                    c_mar_row[net,j] = model.addVars(target_rows, vtype=gp.GRB.BINARY, name=f"c_mar_row_{net}_{j}_r")
-	                    model.addConstr(gp.quicksum(c_mar_row[net,j][r] for r in target_rows) <= len(target_rows)*indicator_i_vars[net,j],name=f'row_selection_on_off_rule1_{net}_{j}')
-	                    #model.addConstr(gp.quicksum(c_mar_row[net,j][r] for r in target_rows) >= indicator_i_vars[net,j],name=f'row_selection_on_off_rule3_{net}_{j}')                
-	                    model.addConstr(gp.quicksum(c_mar_row[net,j][r] for r in target_rows) <= len(target_rows)*io_detector,name=f'row_selection_on_off_rule2_{net}_{j}')
-	                    model.addConstr(gp.quicksum(c_mar_row[net,j][r] for r in target_rows) >= (indicator_i_vars[net,j] + io_detector - 1),name=f'row_selection_on_off_rule3_{net}_{j}')                
-	                    for r in target_rows:
-	                        case[net,j,r] = model.addVars(range(len(target_list)), vtype=gp.GRB.BINARY, name=f"c_mar_row_{net}_{j}_{r}_case")
-	                        model.addConstr(gp.quicksum(case[net,j,r][n] for n in range(len(target_list))) <= c_mar_row[net,j][r],name=f'case_selection_on_off_rule1_{net}_{j}_{r}')
-	                        model.addConstr(gp.quicksum(case[net,j,r][n] for n in range(len(target_list))) >= c_mar_row[net,j][r],name=f'case_selection_on_off_rule2_{net}_{j}_{r}')
-	                        for n, l in enumerate(target_list):
-	                            l_l = len(l)
-	                            #print (net,j,r,n,l,l_l,M_MAR+2)
-	                            for i,local_c in enumerate(l):
-	                                if i == 0:
-	                                    prefix = "left_edge"
-	                                elif i == len(l) - 1:
-	                                    prefix = "right_edge"
-	                                else:
-	                                    prefix = "real_metal"
-	
-	                                if i == 0 or i == l_l - 1:
-	                                    if l_l == M_MAR + 2:
-	                                        expr = t_n_c_r[net][local_c, r] + t_n_c_r[new_net_name][local_c, r]
-	                                    else:
-	                                        if (i == 0 and local_c == 0) or (i == len(l) - 1 and local_c == num_cols - 1):
-	                                            expr = t_n_c_r[net][local_c, r]
-	                                        else:
-	                                            expr = t_n_c_r[net][local_c, r] + t_n_c_r[new_net_name][local_c, r]
-	                                else:
-	                                    expr = t_n_c_r[net][local_c, r]
-	                                model.addConstr(case[net, j, r][n] <= expr,name=f"mar_constraint_{net}_{j}_{r}_{prefix}")
-	
-	        for edge in Edges_m0:
-	            i, j = edge
-	            #print (i,j)
-	            j_prefix, j_num, h = j.split('_')[0], int(j.split('_')[1]), int(j.split('_')[2])
-	            cal_c = (j_num - 1) // 3 # divisor = 3
-	            if j_prefix == 'middle':
-	                if h == 1:
-	                    target_rows = [middle_row]
-	                else :
-	                    target_rows = [dh_middle_row]
-	            elif j_prefix == 'pv':
-	                if h == 1:
-	                    target_rows = pmos_rows
-	                else :
-	                    target_rows = dh_pmos_rows
-	            elif j_prefix == 'nv':
-	                if h == 1:
-	                    target_rows = nmos_rows
-	                else :
-	                    target_rows = dh_nmos_rows
-	            #print (i,j,j_prefix,cal_c,h,target_rows)
-	            for row in target_rows:
-	                var_name = f"y_{net}_edge_{i}_{j}_{row}"
-	                flow_var_name = f"f_{net}_edge_{i}_{j}_{row}"
-	                y_n_c_r[net][i,j,row] = model.addVar(vtype=gp.GRB.BINARY, name=var_name)
-	                f_n_c_r[net][i,j,row] = model.addVar(lb=-cap, ub=cap, vtype=gp.GRB.CONTINUOUS, name=flow_var_name)
-	                model.addConstr(y_n_c_r[net][i, j, row] <= sum_actives-1,f"global_zero_constraint_{net}_{i}_{j}_{row}")
-	                model.addConstr((min_indicator[net]-bbox)-cal_c <= num_cols*(1 - y_n_c_r[net][i, j, row]), name=f"active_c_ge_min_indicator_min_bbox_{net}_{i}_{j}_{row}")
-	                model.addConstr(cal_c-(max_bbox[net]+bbox) <= num_cols*(1 - y_n_c_r[net][i, j, row]), name=f"active_c_ge_max_bbox_min_bbox_{net}_{i}_{j}_{row}")
-	                model.addConstr(f_n_c_r[net][i, j, row] <= cap * y_n_c_r[net][i, j, row], name=f'edge_flow_ub_{net}_{i}_{j}_{row}')
-	                model.addConstr(f_n_c_r[net][i, j, row] >= -cap * y_n_c_r[net][i, j, row], name=f'edge_flow_lb_{net}_{i}_{j}_{row}')
-	                # model.addConstr(flow_cap[net][i, j, row] <= cap * y_n_c_r[net][i, j, row], "flow_cap_lim1")
-	                # model.addConstr(flow_cap[net][i, j, row] <= sum_actives-1, "flow_cap_lim2")
-	                # model.addConstr(flow_cap[net][i, j, row] >= sum_actives-1 - cap * (1 - y_n_c_r[net][i, j, row]), "flow_cap_lim3")
-	                # model.addConstr(flow_cap[net][i, j, row] >= 0, "flow_cap_lim4")
-	                # model.addConstr(f_n_c_r[net][i, j, row] >= -flow_cap[net][i, j, row], "flow_lb")
-	                # model.addConstr(f_n_c_r[net][i, j, row] <=  flow_cap[net][i, j, row], "flow_ub")
-	
-	        for edge in Edges_m1:
-	            i, j = edge
-	            j_prefix, j_num, h = j.split('_')[0], int(j.split('_')[1]), int(j.split('_')[2])
-	            cal_c = (j_num - 1) // 3 # divisor = 3
-	            if h == 1:
-	                target_rows = upper_rows
-	            elif h == 2:
-	                target_rows = dh_upper_rows
-	            if j.startswith('pv_') or j.startswith('nv_') or j.startswith('middle_'):
-	                var_name = f"y_{net}_edge_via_enable_{i}_{j}"
-	                flow_var_name = f"f_{net}_edge_via_enable_{i}_{j}"
-	                y_n_c_r[net][i, j, 've'] = model.addVar(vtype=gp.GRB.BINARY, name=var_name)
-	                model.addConstr(y_n_c_r[net][i, j, 've'] <= sum_actives-1,f"global_zero_constraint_{net}_{i}_{j}_ve")
-	                model.addConstr((min_indicator[net]-bbox)-cal_c <= num_cols*(1 - y_n_c_r[net][i, j, 've']), name=f"active_c_ge_min_indicator_min_one_{net}_{i}_{j}_ve")
-	                model.addConstr(cal_c-(max_bbox[net]+bbox) <= num_cols*(1 - y_n_c_r[net][i, j, 've']), name=f"active_c_ge_max_bbox_min_bbox_{net}_{i}_{j}_ve")
-	                f_n_c_ur[net][i, j, 've'] = model.addVar(lb=-cap, ub=cap, vtype=gp.GRB.CONTINUOUS, name=flow_var_name)
-	                model.addConstr(f_n_c_ur[net][i, j, 've'] <= cap * y_n_c_r[net][i, j, 've'], name=f'edge_flow_ub_{net}_{i}_{j}_ve')
-	                model.addConstr(f_n_c_ur[net][i, j, 've'] >= -cap * y_n_c_r[net][i, j, 've'],name=f'edge_flow_lb_{net}_{i}_{j}_ve')
-	                # flow_cap2[net][i, j, 've'] = model.addVar(vtype=gp.GRB.INTEGER, name=f"flow_cap_{net}_edge")
-	                # model.addConstr(flow_cap2[net][i, j, 've'] <= cap * y_n_c_r[net][i, j, 've'], "flow_cap_lim1")
-	                # model.addConstr(flow_cap2[net][i, j, 've'] <= sum_actives-1, "flow_cap_lim2")
-	                # model.addConstr(flow_cap2[net][i, j, 've'] >= sum_actives-1 - cap * (1 - y_n_c_r[net][i, j, 've']), "flow_cap_lim3")
-	                # model.addConstr(flow_cap2[net][i, j, 've'] >= 0, "flow_cap_lim4")
-	                # model.addConstr(f_n_c_ur[net][i, j, 've'] >= -flow_cap2[net][i, j, 've'], "flow_lb")
-	                # model.addConstr(f_n_c_ur[net][i, j, 've'] <=  flow_cap2[net][i, j, 've'], "flow_ub")
-	            else:
-	                for row in target_rows:
-	                    var_name = f"y_{net}_edge_{i}_{j}_r_{row}"
-	                    flow_var_name = f"f_{net}_edge_{i}_{j}_r_{row}"
-	                    y_n_c_r[net][i,j,row] = model.addVar(vtype=gp.GRB.BINARY, name=var_name)
-	                    model.addConstr(y_n_c_r[net][i, j, row] <= sum_actives-1,f"global_zero_constraint_{net}_{i}_{j}_{row}")
-	                    model.addConstr((min_indicator[net]-bbox)-cal_c <= num_cols*(1 - y_n_c_r[net][i, j, row]), name=f"active_c_ge_min_indicator_min_one_{net}_{i}_{j}_{row}")
-	                    model.addConstr(cal_c-(max_bbox[net]+bbox) <= num_cols*(1 - y_n_c_r[net][i, j, row]), name=f"active_c_ge_max_bbox_min_bbox_{net}_{i}_{j}_{row}")
-	                    f_n_c_ur[net][i,j,row] = model.addVar(lb=-cap, ub=cap, vtype=gp.GRB.CONTINUOUS, name=flow_var_name)
-	                    model.addConstr(f_n_c_ur[net][i, j, row] <= cap * y_n_c_r[net][i, j, row],name=f'edge_flow_ub_{net}_{i}_{j}_{row}')
-	                    model.addConstr(f_n_c_ur[net][i, j, row] >= -cap * y_n_c_r[net][i, j, row],name=f'edge_flow_lb_{net}_{i}_{j}_{row}')
-	                    # flow_cap2[net][i, j, row] = model.addVar(vtype=gp.GRB.INTEGER, name=f"flow_cap_{net}_edge")
-	                    # model.addConstr(flow_cap2[net][i, j, row] <= cap * y_n_c_r[net][i, j, row], "flow_cap_lim1")
-	                    # model.addConstr(flow_cap2[net][i, j, row] <= sum_actives-1, "flow_cap_lim2")
-	                    # model.addConstr(flow_cap2[net][i, j, row] >= sum_actives-1 - cap * (1 - y_n_c_r[net][i, j, row]), "flow_cap_lim3")
-	                    # model.addConstr(flow_cap2[net][i, j, row] >= 0, "flow_cap_lim4")
-	                    # model.addConstr(f_n_c_ur[net][i, j, row] >= -flow_cap2[net][i, j, row], "flow_lb")
-	                    # model.addConstr(f_n_c_ur[net][i, j, row] <=  flow_cap2[net][i, j, row], "flow_ub")
-	
-	        for edge in Edges_vh:
-	            i, j = edge
-	            #print (net,i,j,cap)
-	            j_prefix, j_num, h = j.split('_')[0], int(j.split('_')[1]), int(j.split('_')[2])
-	            cal_c = (j_num - 1) // 3 # divisor = 3
-	            var_name = f"y_{net}_height_connector_{i}_{j}_vh"
-	            flow_var_name = f"f_{net}_height_connector_{i}_{j}_vh"
-	            y_n_c_r[net][i, j, 'vh'] = model.addVar(vtype=gp.GRB.BINARY, name=var_name)
-	            model.addConstr(y_n_c_r[net][i, j, 'vh'] <= sum_actives-1,f"global_zero_constraint_{net}_{i}_{j}_vh")
-	            model.addConstr((min_indicator[net]-bbox)-cal_c <= num_cols*(1 - y_n_c_r[net][i, j, 'vh']), name=f"active_c_ge_min_indicator_min_one_{net}_{i}_{j}_vh")
-	            model.addConstr(cal_c-(max_bbox[net]+bbox) <= num_cols*(1 - y_n_c_r[net][i, j, 'vh']), name=f"active_c_ge_max_bbox_min_bbox_{net}_{i}_{j}_vh")
-	            f_n_c_r[net][i, j, 'vh'] = model.addVar(lb=-cap, ub=cap, vtype=gp.GRB.CONTINUOUS, name=flow_var_name)
-	            model.addConstr(f_n_c_r[net][i, j, 'vh'] <= cap * y_n_c_r[net][i, j, 'vh'], name=f'edge_flow_ub_{net}_{i}_{j}_ve')
-	            model.addConstr(f_n_c_r[net][i, j, 'vh'] >= -cap * y_n_c_r[net][i, j, 'vh'],name=f'edge_flow_lb_{net}_{i}_{j}_ve')
-	
-	        #print("Big : ",big)
-	        for m1 in m1_columns:
-	            v_i, h = int(m1.split('_')[1]), int(m1.split('_')[2])
-	            #print (m1,v_i,h)
-	            v_index = via_positions.index(v_i)
-	            if h == 2 :
-	                model.addConstr(y_n_c_r[net][f"m1_{v_i}_{h-1}", m1, f"vh"] == vh_n_v[net][v_index], name=f"vh_enable_{net}_{v_i}")
-	                model.addConstr(1 - vh_n_v[net][v_index] >= v_n_v[net][h-1,v_index], name=f"m1_cross_check_1_{net}_{v_i}")
-	                model.addConstr(1 - vh_n_v[net][v_index] >= v_n_v[net][h,v_index], name=f"m1_cross_check_2_{net}_{v_i}")
-	            model.addConstr(y_n_c_r[net][m1, f"pv_{v_i}_{h}", f"ve"] <= vh_n_v[net][v_index]+v_n_v[net][h,v_index], name=f"via_enable_{net}_pv_{v_i}_{h}")
-	            model.addConstr(y_n_c_r[net][m1, f"nv_{v_i}_{h}", f"ve"] <= vh_n_v[net][v_index]+v_n_v[net][h,v_index], name=f"via_enable_{net}_nv_{v_i}_{h}")
-	            if MAX_TRACK % 2 == 1:
-	                model.addConstr(y_n_c_r[net][m1, f"middle_{v_i}_{h}", f"ve"] <= vh_n_v[net][v_index]+v_n_v[net][h,v_index], name=f"via_enable_{net}_middle_{v_i}_{h}")
-	        
-	        # edge -> track cost
-	        for i, j in Edges:
-	            #print (i,j)
-	            i_prefix, i_num = i.split('_')[0], int(i.split('_')[1])
-	            j_prefix, j_num = j.split('_')[0], int(j.split('_')[1])
-	            if not j_prefix.startswith('ac') and j_prefix != 'pp' and j_prefix != 'nn':
-	                # flow -> row selection -> track cost
-	                if i_num > j_num:
-	                    i_num, j_num = j_num, i_num
-	                    i_prefix, j_prefix = j_prefix, i_prefix
-	                i_index = i_num // 3 - 1
-	                if i_num not in column_positions[1]:  # only for 2 to 3
-	                    i_diff_1 = 3*(i_index + 2)-i_num
-	                    i_diff_2 = i_num-3*(i_index+1)
-	                    if i_diff_1 <= i_diff_2 and i_diff_1 <= V_OVL:
-	                        i_index = i_num // 3
-	                        #print (i,i_num,i_index,iasdsa_index)
-	                if j_num in column_positions[1]:
-	                    j_index = j_num//3-1  # only for 2 to 3
-	                #elif j_prefix == 'pv' or j_prefix == 'nv' or j_prefix == 'm1':
-	                else: # only for 2 to 3
-	                    j_index = min(len(columns),(j_num+2)//3)-1
-	                    #print (j,j_num,j_index,len(columns),columns)
-	                    j_diff_1 = j_num-3*j_index
-	                    j_diff_2 = 3*(j_index+1)-j_num
-	                    if j_diff_1 <= j_diff_2 and j_diff_1 <= V_OVL:
-	                        j_index = j_index - 1
-	                        #print (j,j_num,j_index,j_index_As)
-	                
-	                if i_prefix != 'm1':
-	                    h = int(i.split('_')[2])
-	                    if j_prefix == 'middle':
-	                        if h == 1:
-	                            target_rows = [middle_row]
-	                        elif h == 2:
-	                            target_rows = [dh_middle_row]
-	                    elif j_prefix == 'pv':
-	                        if h == 1:
-	                            target_rows = pmos_rows
-	                        elif h == 2:
-	                            target_rows = dh_pmos_rows
-	                    elif j_prefix == 'nv':
-	                        if h == 1:
-	                            target_rows = nmos_rows
-	                        elif h == 2:
-	                            target_rows = dh_nmos_rows
-	                    for r in target_rows:
-	                        #if j_prefix == 'pp' or j_prefix == 'nn' or j_prefix == 'ac':
-	                        #    model.addConstr(y_n_c_r[net][i,j,r] == c_mar_row[net,j][r],name=f"link_c_mar_row_to_y_n_c_r_{net}_{i}_{j}_{r}")
-	                        for c in range(i_index, j_index+1):
-	                            model.addConstr(
-	                                t_n_c_r[net][c, r] >= y_n_c_r[net][i, j, r],
-	                                name=f"t_activation_{net}_{i}_{j}_{c}_{r}"
-	                            )
-	                        if i_index - 1 >= 0:  # Ensure valid index
-	                            model.addConstr(y_n_c_r[net][i, j, r] <= t_n_c_r[net][i_index - 1, r] + t_n_c_r[new_net_name][i_index - 1, r],name=f"logical_constraint_{net}_{i}_{j}_i_index_minus_1_{r}")
-	                        if j_index+1 <= len(columns) - 1:
-	                            model.addConstr(y_n_c_r[net][i, j, r] <= t_n_c_r[net][j_index+1, r] + t_n_c_r[new_net_name][j_index+1, r],name=f"logical_constraint_{net}_{i}_{j}_j_index_{r}")      
-	                else:
-	                    if j_prefix == 'm1':
-	                        hj = int(j.split('_')[2])
-	                        h = int(i.split('_')[2])
-	                        if h == hj :
-	                            if h == 1:
-	                                target_rows = upper_rows
-	                            elif h == 2:
-	                                target_rows = dh_upper_rows
-	                            for r in target_rows:
-	                                if i_index != j_index:
-	                                    # Add constraints for all `c` in the range [i_index, j_index]
-	                                    for c in range(i_index, j_index+1):
-	                                        model.addConstr(
-	                                            ut_n_c_r[net][c, r] >= y_n_c_r[net][i, j, r],
-	                                            name=f"t_activation_{net}_{i}_{j}_{c}_{r}"
-	                                        )
-	                                    if i_index - 1 >= 0:  # Ensure valid index
-	                                        model.addConstr(
-	                                            y_n_c_r[net][i, j, r] <= ut_n_c_r[net][i_index - 1, r] + ut_n_c_r[new_net_name][i_index - 1, r],
-	                                            name=f"logical_constraint_{net}_{i}_{j}_i_index_minus_2_{r}"
-	                                        )
-	                                    if j_index+1 <= len(columns) - 1:
-	                                        model.addConstr(
-	                                            y_n_c_r[net][i, j, r] <= ut_n_c_r[net][j_index+1, r] + ut_n_c_r[new_net_name][j_index+1, r],
-	                                            name=f"logical_constraint_{net}_{i}_{j}_j_index_{r}"
-	                                        )
-	                   
-	        #print (net,cap)
-	        for pos_i in sorted_connection_points:
-	            #print (pos_i)
-	            if pos_i.startswith('ach'):
-	                i_prefix, i_num = pos_i.split('_')[0], int(pos_i.split('_')[1])
-	                h = 2
-	            else:    
-	                i_prefix, i_num, h = pos_i.split('_')[0], int(pos_i.split('_')[1]), int(pos_i.split('_')[2])
-	            if i_prefix == 'middle':
-	                if h == 1:
-	                    target_rows = [middle_row]
-	                elif h == 2:
-	                    target_rows = [dh_middle_row]
-	            elif i_prefix == 'pv':
-	                if h == 1:
-	                    target_rows = pmos_rows
-	                elif h == 2:
-	                    target_rows = dh_pmos_rows
-	            elif i_prefix == 'nv':
-	                if h == 1:
-	                    target_rows = nmos_rows
-	                elif h == 2:
-	                    target_rows = dh_nmos_rows
-	            elif i_prefix == 'm1':
-	                if h == 1:
-	                    target_rows = upper_rows
-	                elif h == 2:
-	                    target_rows = dh_upper_rows
-	            #print (pos_i,i_prefix,i_num)
-	            if i_prefix == 'm1':
-	                #rint (pos_i,target_rows)
-	                if h == 1:
-	                    inflow = gp.quicksum(f_n_c_ur[net][j, k, r] for j, k in Edges_m1 if k == pos_i and j.startswith('m1') for r in target_rows)
-	                    outflow = gp.quicksum(f_n_c_r[net][j, k, 'vh'] for j, k in Edges_vh if j == pos_i) + gp.quicksum(f_n_c_ur[net][j, k, r] for j, k in Edges_m1 if j == pos_i and k.startswith('m1') for r in target_rows) + gp.quicksum(f_n_c_ur[net][j, k, 've'] for j, k in Edges_m1 if j == pos_i and not k.startswith('m1'))
-	                if h == 2 :
-	                    inflow = gp.quicksum(f_n_c_r[net][j, k, 'vh'] for j, k in Edges_vh if k == pos_i) + gp.quicksum(f_n_c_ur[net][j, k, r] for j, k in Edges_m1 if k == pos_i and j.startswith('m1') for r in target_rows)
-	                    outflow = gp.quicksum(f_n_c_ur[net][j, k, r] for j, k in Edges_m1 if j == pos_i and k.startswith('m1') for r in target_rows) + gp.quicksum(f_n_c_ur[net][j, k, 've'] for j, k in Edges_m1 if j == pos_i and not k.startswith('m1'))
-	            elif i_prefix == 'pv' or i_prefix == 'nv' or i_prefix == 'middle':
-	                #print (pos_i,target_rows)
-	                if i_num in column_positions[1]:
-	                    outflow = gp.quicksum(f_n_c_r[net][j, k, r] for j, k in Edges_m0 if j == pos_i for r in target_rows) + gp.quicksum(f_n_c_r[net][j, k, 'co'] for j, k in Edges_net if j == pos_i)
-	                    if i_num in via_positions :
-	                        inflow = gp.quicksum(f_n_c_r[net][j, k, r] for j, k in Edges_m0 if k == pos_i for r in target_rows) + gp.quicksum(f_n_c_ur[net][j, k, 've'] for j, k in Edges_m1 if k == pos_i)
-	                    else :
-	                        inflow = gp.quicksum(f_n_c_r[net][j, k, r] for j, k in Edges_m0 if k == pos_i for r in target_rows)
-	                else :
-	                    inflow = gp.quicksum(f_n_c_r[net][j, k, r] for j, k in Edges_m0 if k == pos_i for r in target_rows) + gp.quicksum(f_n_c_ur[net][j, k, 've'] for j, k in Edges_m1 if k == pos_i)
-	                    outflow = gp.quicksum(f_n_c_r[net][j, k, r] for j, k in Edges_m0 if j == pos_i for r in target_rows)
-	            else :
-	                inflow = gp.quicksum(f_n_c_r[net][j, k, 'co'] for j, k in Edges_net if k == pos_i)
-	                outflow = 0
-	
-	            net_flow[net, pos_i] = inflow - outflow
-	            # Introduce auxiliary variable cap_i
-	            #cap_i[net, pos_i] = model.addVar(vtype=gp.GRB.INTEGER, lb=-cap, ub=cap, name=f"cap_{net}_{pos_i}")
-	            # Combine root node and non-root constraints
-	            # If is_root_node[net, pos_i] is True -> cap_i = 1 - sum_actives
-	            # If is_root_node[net, pos_i] is False -> cap_i = 1 or -1
-	            if pos_i in wo_via_points:
-	                #s_i[net, pos_i] = model.addVar(vtype=gp.GRB.BINARY, name=f"s_{net}_{pos_i}")
-	                #model.addConstr(s_i[net, pos_i]<=indicator_i_vars[net, pos_i],name=f"binary_on_off_{net}_{pos_i}")
-	                model.addGenConstrIndicator(
-	                    is_root_node[net, pos_i], True,
-	                    #cap_i[net, pos_i] == gp.LinExpr(1.0) - sum_actives,
-	                    ##cap_i[net, pos_i] == 1 - sum_actives,
-	                    net_flow[net, pos_i] == 1 - sum_actives,
-	                    #cap_i[net, pos_i] == -1,
-	                    name=f"t_definition_root_{net}_{pos_i}"
-	                )
-	                model.addGenConstrIndicator(
-	                    is_root_node[net, pos_i], False,
-	                    #cap_i[net, pos_i] == -indicator_i_vars[net, pos_i] + 2 * s_i[net, pos_i],
-	                    ##cap_i[net, pos_i] == indicator_i_vars[net, pos_i],
-	                    net_flow[net, pos_i] == indicator_i_vars[net, pos_i],
-	                    name=f"t_definition_non_root_{net}_{pos_i}"
-	                )
-	            else:
-	                #print(pos_i)
-	                ##model.addConstr(cap_i[net, pos_i] == 0, name=f"middle_node_{net}_{pos_i}")
-	                model.addConstr(net_flow[net, pos_i] == 0, name=f"middle_node_{net}_{pos_i}")
-	            #model.addConstr(
-	            #    net_flow[net, pos_i] == cap_i[net, pos_i],
-	            #    name=f"flow_conservation_{net}_{pos_i}"
-	            #)
+        f_n_c_r[net] = {}
+        f_n_c_ur[net]= {}
+        #y_n_c_r[net] = model.addVars(Edges_m0, rows, vtype=gp.GRB.BINARY, name=f"y_{net}_edge_r")
+        y_n_c_r[net] = {}
+        #flow_cap[net] = model.addVars(Edges_m0, rows, vtype=gp.GRB.INTEGER, name=f"flow_cap_{net}_edge")
+        #flow_cap2[net] = {}
+        
+        # id_detector, io_marker[net]  / # sum_acitves variable is always geq than 1
+        # sum_actives == 1 -> io_detector is 0 but only when io_marker[net] is 1 -> io_detector is 1
+        # sum_actives > 1 -> io_detector is 1.
+        big=len(columns)
+        io_detector = model.addVar(vtype=gp.GRB.BINARY, name=f"io_detector_{net}") # 1 -> iopin / 0 -> don't care
+        model.addConstr(big*io_detector >= sum_actives - 1 + io_marker[net],name=f"y_detector_dtermine_lb_{net}_{j}")
+        model.addConstr(io_detector <= sum_actives - 1 + io_marker[net],name=f"y_detector_dtermine_ub_{net}_{j}")
 
-if routing_switch == 'on':
-	# Prevent different nets from using the same via position
-	for v in via_indices:
-	    #model.addConstr(gp.quicksum(vh_n_v[net][v] for net in total_nets if net not in power_net) <= 1,name=f"vh_conflict_{v}")
-	    for h in height:
-	        model.addConstr(gp.quicksum(v_n_v[net][h,v] + vh_n_v[net][v] for net in total_nets if net not in power_net) <= 1,name=f"via_conflict_{h}_{v}")
-	
-	# Prevent different nets from using the same row selection
-	# Prevent consecutive row usage
-	for edge in Edges_m0:
-	    i, j = edge
-	    j_prefix, j_num, h = j.split('_')[0], int(j.split('_')[1]), int(j.split('_')[2])
-	    if j_prefix == 'middle':
-	        if h == 1:
-	            target_rows = [middle_row]
-	        elif h == 2:
-	            target_rows = [dh_middle_row]
-	    elif j_prefix == 'pv':
-	        if h == 1:
-	            target_rows = pmos_rows
-	        elif h == 2:
-	            target_rows = dh_pmos_rows
-	    elif j_prefix == 'nv':
-	        if h == 1:
-	            target_rows = nmos_rows
-	        elif h == 2:
-	            target_rows = dh_nmos_rows
-	    for r in target_rows:
-	        model.addConstr(gp.quicksum(y_n_c_r[net][i,j,r] for net in total_nets if net not in power_net)<= 1,name=f"row_selection_conflict_{i}_{j}_{r}")
-	    for net in total_nets:
-	        if net not in power_net and len(target_rows)>1:
-	            consecutive = 2
-	            for r_start in range(len(target_rows) - consecutive + 1):
-	                con_r = target_rows[r_start : r_start + consecutive]
-	                #print(i,j,net,r_start,con_r)
-	                model.addConstr(gp.quicksum(y_n_c_r[net][i,j,r] for r in con_r) <= 1,name=f"consecutive_row_usage_conflict_for_one_net_{net}_{i}_{j}")
-	
-	for edge in Edges_m1:
-	    i, j = edge
-	    j_prefix, j_num, h = j.split('_')[0], int(j.split('_')[1]), int(j.split('_')[2])
-	    if j_prefix == 'm1':
-	        if h == 1:
-	            target_rows = upper_rows
-	        elif h == 2:
-	            target_rows = dh_upper_rows
-	    if not j.startswith('pv_') and j.startswith('nv_') and j.startswith('middle_'):
-	        for r in target_rows:
-	            model.addConstr(gp.quicksum(y_n_c_r[net][i,j,r] for net in total_nets if net not in power_net)<= 1,name=f"row_selection_conflict_{i}_{j}_{r}")
-	# local hole blocking
-        for net in total_nets:
-            if net not in power_net and net != new_net_name:
-                for r in rows:
-                    for c in columns[1:-1]:
-                        model.addConstr(
-                            t_n_c_r[net][c, r] <= t_n_c_r[net][c-1, r] + t_n_c_r[net][c+1, r],
-                            name=f"no_len1_island_{net}_{c}_{r}"
-                        )
-	# Cell-Flex
-	# horizontal pin separation -> horizontal pin extendability
-	signal_nets = [net for net in io_pins if net not in power_net]
-	pin_interruption = 2
-	pin_extend_reward={}
-	one_pin_net_binary={}
-	cond = {}
-	M = 20
-	search_columns = [c for c in gate_cols[1] if 1 <= c and c <= len(columns)-2]
-	for h in height:
-	    if h == 1:
-	        target_rows = rows
-	    if h == 2:
-	        target_rows = dh_rows
-	    for c in search_columns:
-	        extendability = model.addVar(vtype=gp.GRB.BINARY, name=f"l_e_{h}_{c}")
-	        neighbor_cols = [c + dc for dc in range(-pin_interruption, pin_interruption+1) if 0 <= c + dc < len(columns)]
-	        #print (c,neighbor_cols)
-	        pin_extend_reward[h,c] = model.addVar(vtype=gp.GRB.INTEGER, name=f"p_e_r_{h}_{c}")
-	        cond[h,c]={}
-	        one_pin_net_binary[h,c]={}
-	        for r in target_rows:
-	            row_metal = gp.quicksum(t_n_c_r[net][ni,r] for net in total_nets if net not in power_net for ni in neighbor_cols)
-	            for s_n in signal_nets:
-	                cond[h,c][r, s_n] = model.addVar(vtype=gp.GRB.BINARY,name=f"{h}_cond_col{c}_row{r}_net{s_n}")
-	                pin_metal = gp.quicksum(t_n_c_r[s_n][ni,r] for ni in neighbor_cols)
-	                one_pin_net_binary[h,c][s_n] = model.addVar(vtype=gp.GRB.BINARY, name=f"one_pin_net_bin_{h}_{c}_{s_n}")
-	                pin_is_there = model.addVar(vtype=GRB.BINARY, name=f"pin_is_there_{r}_{s_n}")
-	                
-	                model.addConstr(sum_actives_vars[s_n] <= 1 + M * (1-one_pin_net_binary[h,c][s_n]),name=f"via_used_binary_upper")
-	                model.addConstr(sum_actives_vars[s_n] >= 2 - M * one_pin_net_binary[h,c][s_n],name=f"via_used_binary_lower")
-	                model.addConstr(cond[h,c][r,s_n] <= one_pin_net_binary[h,c][s_n],name=f"cond_via_{h}_{c}_{r}_{s_n}")
-	
-	                model.addConstr(cond[h,c][r,s_n] <= pin_metal,name=f"cond_pinmetal_{h}_{c}_{r}_{s_n}")
-	                model.addConstr(pin_is_there <= pin_metal,name=f"pin_is_there1_pinmetal_{h}_{c}_{r}_{s_n}")
-	                model.addConstr(pin_is_there >= pin_metal/len(neighbor_cols),name=f"pin_is_there2_pinmetal_{h}_{c}_{r}_{s_n}")
-	
-	                model.addConstr(row_metal - pin_metal <= M*(1-cond[h,c][r,s_n]),name=f"cond_upper_{h}_{c}_{r}_{s_n}")
-	                model.addConstr(row_metal - pin_metal >= one_pin_net_binary[h,c][s_n] + pin_is_there - 1 - cond[h,c][r,s_n],name=f"cond_lower_{h}_{c}_{r}_{s_n}")
-	
-	        model.addConstr(pin_extend_reward[h,c]==gp.quicksum(cond[h,c][r,s_n] for r in target_rows for s_n in signal_nets),name=f"reward_make_for_{c}")
-	
-	# vertical pin separation
-	z_dict = {}  # dictionary - z_{c,net1,net2,r1,r2}
-	for h in height:
-	    if h == 1:
-	        target_rows = rows
-	    if h == 2:
-	        target_rows = dh_rows
-	    for c in gate_cols[h][:-1]:
-	        pos_a = f"ac_{3 + 3 * c}_{h}"
-	        pos_a_next = f"ac_{3 + 3 * (c+2)}_{h}"
-	        for net1 in signal_nets:
-	            for net2 in signal_nets:
-	                if net1 == net2:
-	                    continue
-	                for r1 in target_rows:
-	                    for r2 in target_rows:
-	                        if abs(r1-r2) >= 3:
-	                            z_dict[(c,net1,net2,r1,r2)] = model.addVar(vtype=gp.GRB.BINARY,name=f"z_{c}_{net1}_{net2}_{r1}_{r2}")
-	                            # 1) z <= c_mar_row[net1, j_c][r1]
-	                            model.addConstr(z_dict[(c,net1,net2,r1,r2)] <= c_mar_row[net1, pos_a][r1], name=f"z_le_net1_{c}_{net1}_{r1}")
-	                            # 2) z <= c_mar_row[net2, j_c1][r2]
-	                            model.addConstr(z_dict[(c,net1,net2,r1,r2)] <= c_mar_row[net2, pos_a_next][r2], name=f"z_le_net2_{c}_{net2}_{r2}")
-	                            # 3) z >= c_mar_row[net1, j_c][r1] + c_mar_row[net2, j_c1][r2] - 1
-	                            model.addConstr(z_dict[(c,net1,net2,r1,r2)] >= c_mar_row[net1, pos_a][r1] + c_mar_row[net2, pos_a_next][r2] - 1, name=f"z_ge_{c}_{net1}_{net2}_{r1}_{r2}")
-	
-	
-	# OBS misalign penalty
-	obs_misalign_penalty={} # OBS is in the row
-	if len(height) > 1:
-	    target_upper_rows = upper_rows+dh_upper_rows
-	else :
-	    target_upper_rows = upper_rows
-	print (target_upper_rows)
-	for r in target_upper_rows:
-	    obs_misalign_penalty[r] = model.addVar(vtype=gp.GRB.BINARY, name=f"o_m_p_{r}")
-	    model.addConstr(obs_misalign_penalty[r] <= gp.quicksum(ut_n_c_r[net][c,r] for net in total_nets if net not in io_pins for c in columns) ,name=f"o_m_p_constr1_{r}")
-	    for net in total_nets:
-	        if net not in io_pins:
-	            for c in columns:
-	                model.addConstr(obs_misalign_penalty[r] >= ut_n_c_r[net][c,r] ,name=f"o_m_p_constr2_{net}_{c}_{r}")
-	
-	# Track cost constraints per row
-	for c in columns:
-	    for r in rows+dh_rows:
-	        model.addConstr(
-	            t_c_r[c, r] == gp.quicksum(t_n_c_r[net][c, r] for net in total_nets if net not in power_net),
-	            name=f"track_cost_{c}_{r}"
-	        )
-	        model.addConstr(
-	            t_c_r[c, r] + t_n_c_r[new_net_name][c, r] <= 1,
-	            name=f"max_track_{c}_{r}"
-	        )
-	    for r in upper_rows+dh_upper_rows:
-	        model.addConstr(
-	            ut_c_r[c, r] == gp.quicksum(ut_n_c_r[net][c, r] for net in total_nets if net not in power_net),
-	            #ut_c_r[c, r] == gp.quicksum(ut_n_c_r[net][c, r] for net in new_nets),
-	            name=f"uppertrack_cost_{c}_{r}"
-	        )
-	        model.addConstr(
-	            ut_c_r[c, r] + ut_n_c_r[new_net_name][c, r]  <= 1,
-	            name=f"max_uppertrack_{c}_{r}"
-	        )
-	
-	# Total track cost per column
-	for h in height:
-	    for c in columns:
-	        if h == 1:
-	            model.addConstr(
-	                ut_c[h,c] == gp.quicksum(ut_c_r[c, r] for r in upper_rows),
-	                name=f"uppertrack_cost_{h}_{c}"
-	            )
-	            model.addConstr(
-	                t_c[h,c] == gp.quicksum(t_c_r[c, r] for r in rows),
-	                name=f"track_cost_{h}_{c}"
-	            )
-	        elif h == 2:
-	            model.addConstr(
-	                ut_c[h,c] == gp.quicksum(ut_c_r[c, r] for r in dh_upper_rows),
-	                name=f"uppertrack_cost_{h}_{c}"
-	            )
-	            model.addConstr(
-	                t_c[h,c] == gp.quicksum(t_c_r[c, r] for r in dh_rows),
-	                name=f"track_cost_{h}_{c}"
-	            )
-	        model.addConstr(
-	            t_c[h,c] <= MAX_TRACK,
-	            name=f"max_track_{h}_{c}"
-	        )
-	
-	# Objective function
-	via_cost = 60
-	via_pdn_cost = 100
-	vh_cost = 90
-	vh_pdn_cost = 110
-	lowertrack_cost = 3
-	uppertrack_cost = 6
-	eol_cost = 1
-	total_via_cost = vh_cost * gp.quicksum(vh_n_v[net][v]  for net in total_nets if net not in power_net for v in via_indices if 4*(v+1) % 3 !=0) + via_cost * gp.quicksum(v_n_v[net][h,v]  for net in total_nets if net not in power_net for h in height for v in via_indices if 4*(v+1) % 3 !=0) + vh_pdn_cost * gp.quicksum(vh_n_v[net][v]  for net in total_nets if net not in power_net for v in via_indices if 4*(v+1) % 3 ==0) + via_pdn_cost * gp.quicksum(v_n_v[net][h,v]  for net in total_nets if net not in power_net for h in height for v in via_indices if 4*(v+1) % 3 ==0)
-	#total_via_cost = vh_cost * gp.quicksum(vh_n_v[net][v]  for net in total_nets if net not in power_net for v in via_indices) + via_cost * gp.quicksum(v_n_v[net][h,v]  for net in total_nets if net not in power_net for h in height for v in via_indices)
-	#total_via_cost = via_cost * gp.quicksum(v_n_v[net][v] for net in new_nets for v in valid_via_indices[net])
-	total_track_cost = lowertrack_cost * gp.quicksum(t_c[h,c] for h in height for c in columns)
-	total_uppertrack_cost = 2 * uppertrack_cost * gp.quicksum(ut_c[h,c] for h in height for c in columns)
-	total_eol_cost = eol_cost * gp.quicksum(t_n_c_r[new_net_name][c,r] for c in columns for r in rows+dh_rows)
-	total_uppertrack_eol_cost = eol_cost * uppertrack_cost * gp.quicksum(ut_n_c_r[new_net_name][c,r] for c in columns for r in upper_rows+dh_upper_rows)
-	#model.setObjective(total_track_cost + total_via_cost + total_uppertrack_cost + total_eol_cost + total_uppertrack_eol_cost, GRB.MINIMIZE)
-	
-	# Cell-Flex
-	o_m_p_cost = 100
-	obs_penalty_1 = o_m_p_cost * gp.quicksum(obs_misalign_penalty[r] for r in upper_rows)
-	# Reward
-	# reward
-	p_e_cost = 1
-	pin_extendability = p_e_cost*gp.quicksum(pin_extend_reward[h,c] for h in height for c in search_columns)
-	p_s_cost = 1
-	pin_separation = p_s_cost*gp.quicksum(z_dict[idx] for idx in z_dict)
-	# Final MINIMIZE FUNCTION
-	#model.setObjective(total_track_cost + total_via_cost + total_uppertrack_cost + total_eol_cost + total_uppertrack_eol_cost, GRB.MINIMIZE)
-	model.setObjective(total_track_cost + total_via_cost + total_uppertrack_cost + total_eol_cost + total_uppertrack_eol_cost + obs_penalty_1 - pin_extendability - pin_separation ,gp.GRB.MINIMIZE)
-	#model.setObjective(total_track_cost + total_via_cost + total_uppertrack_cost + total_eol_cost + total_uppertrack_eol_cost + obs_penalty_1 - pin_extendability,gp.GRB.MINIMIZE)
-	#model.setObjective(total_track_cost + total_via_cost + total_uppertrack_cost + total_eol_cost + total_uppertrack_eol_cost,gp.GRB.MINIMIZE)
+        for edge in Edges_net:
+            i, j = edge
+            #print (net,i,j,cap)
+            var_name = f"y_{net}_edge_connector_{i}_{j}_co"
+            flow_var_name = f"f_{net}_edge_connector_{i}_{j}_co"
+            y_n_c_r[net][i, j, 'co'] = model.addVar(vtype=gp.GRB.BINARY, name=var_name)
+            model.addConstr(y_n_c_r[net][i, j, 'co'] <= indicator_i_vars[net,j], f"on_off_constraint_by_indicator_{net}_{i}_{j}_co")
+            model.addConstr(y_n_c_r[net][i, j, 'co'] <= io_detector, f"on_off_constraint_by_sum_actives_{net}_{i}_{j}_co")
+            model.addConstr(y_n_c_r[net][i, j, 'co'] >= indicator_i_vars[net,j]+io_detector-1, f"on_off_constraint_by_mixing_{net}_{i}_{j}_co")
+            f_n_c_r[net][i, j, 'co'] = model.addVar(lb=-cap, ub=cap, vtype=gp.GRB.CONTINUOUS, name=flow_var_name)
+            model.addConstr(f_n_c_r[net][i, j, 'co'] <= cap * y_n_c_r[net][i, j, 'co'], name=f'edge_flow_ub_{net}_{i}_{j}_ve')
+            model.addConstr(f_n_c_r[net][i, j, 'co'] >= -cap * y_n_c_r[net][i, j, 'co'],name=f'edge_flow_lb_{net}_{i}_{j}_ve')
+        
+        # MAR !!!
+        #if io_marker[net] == 1:
+        for c in range(num_cols) :
+            positions = get_positions(c,height)
+            target_list = get_list_set(c,M_MAR,num_cols) # 2 to 3 gear ratio -> divided 3
+            #print (net,c,target_list)
+            for key, pos_list in positions.items():
+                for j in pos_list:
+                    j_prefix = j.split('_')[0]
+                    if key != 'mh':
+                        h = int(j.split('_')[2])
+                    else :
+                        h = int(2)
+                    #print (c, j, j_prefix, target_list, len(target_list))
+                    if key == 'ac':
+                        if h == 1:
+                            target_rows = rows
+                        elif h == 2:
+                            target_rows = dh_rows
+                    elif key == 'pp':
+                        if h == 1:
+                            target_rows = pmos_rows
+                        elif h == 2:
+                            target_rows = dh_pmos_rows
+                    elif key == 'nn':
+                        if h == 1:
+                            target_rows = nmos_rows
+                        elif h == 2:
+                            target_rows = dh_nmos_rows
+                    elif j_prefix == 'ach2':
+                        if mh_order == 'P_FIRST':
+                            target_rows = nmos_rows + dh_nmos_rows
+                        else : 
+                            target_rows = pmos_rows + dh_pmos_rows
+                    elif j_prefix == 'ach3p1':
+                        if mh_order == 'P_FIRST':
+                            target_rows = nmos_rows + pmos_rows + dh_nmos_rows
+                        else : 
+                            target_rows = nmos_rows + pmos_rows + dh_pmos_rows
+                        if MAX_TRACK % 2 == 1:
+                            target_rows = target_rows + middle_row
+                    elif j_prefix == 'ach3p2':
+                        if mh_order == 'P_FIRST':
+                            target_rows = nmos_rows + dh_pmos_rows + dh_nmos_rows
+                        else : 
+                            target_rows = pmos_rows + dh_pmos_rows + dh_nmos_rows
+                        if MAX_TRACK % 2 == 1:
+                            target_rows = target_rows + dh_middle_row
+                    elif j_prefix == 'ach4':
+                        target_rows = rows + dh_rows
+                    #print (net,j,key,h)
+                    #print (net,j,target_rows)
+                    c_mar_row[net,j] = model.addVars(target_rows, vtype=gp.GRB.BINARY, name=f"c_mar_row_{net}_{j}_r")
+                    model.addConstr(gp.quicksum(c_mar_row[net,j][r] for r in target_rows) <= len(target_rows)*indicator_i_vars[net,j],name=f'row_selection_on_off_rule1_{net}_{j}')
+                    #model.addConstr(gp.quicksum(c_mar_row[net,j][r] for r in target_rows) >= indicator_i_vars[net,j],name=f'row_selection_on_off_rule3_{net}_{j}')                
+                    model.addConstr(gp.quicksum(c_mar_row[net,j][r] for r in target_rows) <= len(target_rows)*io_detector,name=f'row_selection_on_off_rule2_{net}_{j}')
+                    model.addConstr(gp.quicksum(c_mar_row[net,j][r] for r in target_rows) >= (indicator_i_vars[net,j] + io_detector - 1),name=f'row_selection_on_off_rule3_{net}_{j}')                
+                    for r in target_rows:
+                        case[net,j,r] = model.addVars(range(len(target_list)), vtype=gp.GRB.BINARY, name=f"c_mar_row_{net}_{j}_{r}_case")
+                        model.addConstr(gp.quicksum(case[net,j,r][n] for n in range(len(target_list))) <= c_mar_row[net,j][r],name=f'case_selection_on_off_rule1_{net}_{j}_{r}')
+                        model.addConstr(gp.quicksum(case[net,j,r][n] for n in range(len(target_list))) >= c_mar_row[net,j][r],name=f'case_selection_on_off_rule2_{net}_{j}_{r}')
+                        for n, l in enumerate(target_list):
+                            l_l = len(l)
+                            #print (net,j,r,n,l,l_l,M_MAR+2)
+                            for i,local_c in enumerate(l):
+                                if i == 0:
+                                    prefix = "left_edge"
+                                elif i == len(l) - 1:
+                                    prefix = "right_edge"
+                                else:
+                                    prefix = "real_metal"
 
-if routing_switch == 'off':
+                                if i == 0 or i == l_l - 1:
+                                    if l_l == M_MAR + 2:
+                                        expr = t_n_c_r[net][local_c, r] + t_n_c_r[new_net_name][local_c, r]
+                                    else:
+                                        if (i == 0 and local_c == 0) or (i == len(l) - 1 and local_c == num_cols - 1):
+                                            expr = t_n_c_r[net][local_c, r]
+                                        else:
+                                            expr = t_n_c_r[net][local_c, r] + t_n_c_r[new_net_name][local_c, r]
+                                else:
+                                    expr = t_n_c_r[net][local_c, r]
+                                model.addConstr(case[net, j, r][n] <= expr,name=f"mar_constraint_{net}_{j}_{r}_{prefix}")
+
+        for edge in Edges_m0:
+            i, j = edge
+            #print (i,j)
+            j_prefix, j_num, h = j.split('_')[0], int(j.split('_')[1]), int(j.split('_')[2])
+            cal_c = (j_num - 1) // 3 # divisor = 3
+            if j_prefix == 'middle':
+                if h == 1:
+                    target_rows = [middle_row]
+                else :
+                    target_rows = [dh_middle_row]
+            elif j_prefix == 'pv':
+                if h == 1:
+                    target_rows = pmos_rows
+                else :
+                    target_rows = dh_pmos_rows
+            elif j_prefix == 'nv':
+                if h == 1:
+                    target_rows = nmos_rows
+                else :
+                    target_rows = dh_nmos_rows
+            #print (i,j,j_prefix,cal_c,h,target_rows)
+            for row in target_rows:
+                var_name = f"y_{net}_edge_{i}_{j}_{row}"
+                flow_var_name = f"f_{net}_edge_{i}_{j}_{row}"
+                y_n_c_r[net][i,j,row] = model.addVar(vtype=gp.GRB.BINARY, name=var_name)
+                f_n_c_r[net][i,j,row] = model.addVar(lb=-cap, ub=cap, vtype=gp.GRB.CONTINUOUS, name=flow_var_name)
+                model.addConstr(y_n_c_r[net][i, j, row] <= sum_actives-1,f"global_zero_constraint_{net}_{i}_{j}_{row}")
+                model.addConstr((min_indicator[net]-bbox)-cal_c <= num_cols*(1 - y_n_c_r[net][i, j, row]), name=f"active_c_ge_min_indicator_min_bbox_{net}_{i}_{j}_{row}")
+                model.addConstr(cal_c-(max_bbox[net]+bbox) <= num_cols*(1 - y_n_c_r[net][i, j, row]), name=f"active_c_ge_max_bbox_min_bbox_{net}_{i}_{j}_{row}")
+                model.addConstr(f_n_c_r[net][i, j, row] <= cap * y_n_c_r[net][i, j, row], name=f'edge_flow_ub_{net}_{i}_{j}_{row}')
+                model.addConstr(f_n_c_r[net][i, j, row] >= -cap * y_n_c_r[net][i, j, row], name=f'edge_flow_lb_{net}_{i}_{j}_{row}')
+                # model.addConstr(flow_cap[net][i, j, row] <= cap * y_n_c_r[net][i, j, row], "flow_cap_lim1")
+                # model.addConstr(flow_cap[net][i, j, row] <= sum_actives-1, "flow_cap_lim2")
+                # model.addConstr(flow_cap[net][i, j, row] >= sum_actives-1 - cap * (1 - y_n_c_r[net][i, j, row]), "flow_cap_lim3")
+                # model.addConstr(flow_cap[net][i, j, row] >= 0, "flow_cap_lim4")
+                # model.addConstr(f_n_c_r[net][i, j, row] >= -flow_cap[net][i, j, row], "flow_lb")
+                # model.addConstr(f_n_c_r[net][i, j, row] <=  flow_cap[net][i, j, row], "flow_ub")
+
+        for edge in Edges_m1:
+            i, j = edge
+            j_prefix, j_num, h = j.split('_')[0], int(j.split('_')[1]), int(j.split('_')[2])
+            cal_c = (j_num - 1) // 3 # divisor = 3
+            if h == 1:
+                target_rows = upper_rows
+            elif h == 2:
+                target_rows = dh_upper_rows
+            if j.startswith('pv_') or j.startswith('nv_') or j.startswith('middle_'):
+                var_name = f"y_{net}_edge_via_enable_{i}_{j}"
+                flow_var_name = f"f_{net}_edge_via_enable_{i}_{j}"
+                y_n_c_r[net][i, j, 've'] = model.addVar(vtype=gp.GRB.BINARY, name=var_name)
+                model.addConstr(y_n_c_r[net][i, j, 've'] <= sum_actives-1,f"global_zero_constraint_{net}_{i}_{j}_ve")
+                model.addConstr((min_indicator[net]-bbox)-cal_c <= num_cols*(1 - y_n_c_r[net][i, j, 've']), name=f"active_c_ge_min_indicator_min_one_{net}_{i}_{j}_ve")
+                model.addConstr(cal_c-(max_bbox[net]+bbox) <= num_cols*(1 - y_n_c_r[net][i, j, 've']), name=f"active_c_ge_max_bbox_min_bbox_{net}_{i}_{j}_ve")
+                f_n_c_ur[net][i, j, 've'] = model.addVar(lb=-cap, ub=cap, vtype=gp.GRB.CONTINUOUS, name=flow_var_name)
+                model.addConstr(f_n_c_ur[net][i, j, 've'] <= cap * y_n_c_r[net][i, j, 've'], name=f'edge_flow_ub_{net}_{i}_{j}_ve')
+                model.addConstr(f_n_c_ur[net][i, j, 've'] >= -cap * y_n_c_r[net][i, j, 've'],name=f'edge_flow_lb_{net}_{i}_{j}_ve')
+                # flow_cap2[net][i, j, 've'] = model.addVar(vtype=gp.GRB.INTEGER, name=f"flow_cap_{net}_edge")
+                # model.addConstr(flow_cap2[net][i, j, 've'] <= cap * y_n_c_r[net][i, j, 've'], "flow_cap_lim1")
+                # model.addConstr(flow_cap2[net][i, j, 've'] <= sum_actives-1, "flow_cap_lim2")
+                # model.addConstr(flow_cap2[net][i, j, 've'] >= sum_actives-1 - cap * (1 - y_n_c_r[net][i, j, 've']), "flow_cap_lim3")
+                # model.addConstr(flow_cap2[net][i, j, 've'] >= 0, "flow_cap_lim4")
+                # model.addConstr(f_n_c_ur[net][i, j, 've'] >= -flow_cap2[net][i, j, 've'], "flow_lb")
+                # model.addConstr(f_n_c_ur[net][i, j, 've'] <=  flow_cap2[net][i, j, 've'], "flow_ub")
+            else:
+                for row in target_rows:
+                    var_name = f"y_{net}_edge_{i}_{j}_r_{row}"
+                    flow_var_name = f"f_{net}_edge_{i}_{j}_r_{row}"
+                    y_n_c_r[net][i,j,row] = model.addVar(vtype=gp.GRB.BINARY, name=var_name)
+                    model.addConstr(y_n_c_r[net][i, j, row] <= sum_actives-1,f"global_zero_constraint_{net}_{i}_{j}_{row}")
+                    model.addConstr((min_indicator[net]-bbox)-cal_c <= num_cols*(1 - y_n_c_r[net][i, j, row]), name=f"active_c_ge_min_indicator_min_one_{net}_{i}_{j}_{row}")
+                    model.addConstr(cal_c-(max_bbox[net]+bbox) <= num_cols*(1 - y_n_c_r[net][i, j, row]), name=f"active_c_ge_max_bbox_min_bbox_{net}_{i}_{j}_{row}")
+                    f_n_c_ur[net][i,j,row] = model.addVar(lb=-cap, ub=cap, vtype=gp.GRB.CONTINUOUS, name=flow_var_name)
+                    model.addConstr(f_n_c_ur[net][i, j, row] <= cap * y_n_c_r[net][i, j, row],name=f'edge_flow_ub_{net}_{i}_{j}_{row}')
+                    model.addConstr(f_n_c_ur[net][i, j, row] >= -cap * y_n_c_r[net][i, j, row],name=f'edge_flow_lb_{net}_{i}_{j}_{row}')
+                    # flow_cap2[net][i, j, row] = model.addVar(vtype=gp.GRB.INTEGER, name=f"flow_cap_{net}_edge")
+                    # model.addConstr(flow_cap2[net][i, j, row] <= cap * y_n_c_r[net][i, j, row], "flow_cap_lim1")
+                    # model.addConstr(flow_cap2[net][i, j, row] <= sum_actives-1, "flow_cap_lim2")
+                    # model.addConstr(flow_cap2[net][i, j, row] >= sum_actives-1 - cap * (1 - y_n_c_r[net][i, j, row]), "flow_cap_lim3")
+                    # model.addConstr(flow_cap2[net][i, j, row] >= 0, "flow_cap_lim4")
+                    # model.addConstr(f_n_c_ur[net][i, j, row] >= -flow_cap2[net][i, j, row], "flow_lb")
+                    # model.addConstr(f_n_c_ur[net][i, j, row] <=  flow_cap2[net][i, j, row], "flow_ub")
+
+        for edge in Edges_vh:
+            i, j = edge
+            #print (net,i,j,cap)
+            j_prefix, j_num, h = j.split('_')[0], int(j.split('_')[1]), int(j.split('_')[2])
+            cal_c = (j_num - 1) // 3 # divisor = 3
+            var_name = f"y_{net}_height_connector_{i}_{j}_vh"
+            flow_var_name = f"f_{net}_height_connector_{i}_{j}_vh"
+            y_n_c_r[net][i, j, 'vh'] = model.addVar(vtype=gp.GRB.BINARY, name=var_name)
+            model.addConstr(y_n_c_r[net][i, j, 'vh'] <= sum_actives-1,f"global_zero_constraint_{net}_{i}_{j}_vh")
+            model.addConstr((min_indicator[net]-bbox)-cal_c <= num_cols*(1 - y_n_c_r[net][i, j, 'vh']), name=f"active_c_ge_min_indicator_min_one_{net}_{i}_{j}_vh")
+            model.addConstr(cal_c-(max_bbox[net]+bbox) <= num_cols*(1 - y_n_c_r[net][i, j, 'vh']), name=f"active_c_ge_max_bbox_min_bbox_{net}_{i}_{j}_vh")
+            f_n_c_r[net][i, j, 'vh'] = model.addVar(lb=-cap, ub=cap, vtype=gp.GRB.CONTINUOUS, name=flow_var_name)
+            model.addConstr(f_n_c_r[net][i, j, 'vh'] <= cap * y_n_c_r[net][i, j, 'vh'], name=f'edge_flow_ub_{net}_{i}_{j}_ve')
+            model.addConstr(f_n_c_r[net][i, j, 'vh'] >= -cap * y_n_c_r[net][i, j, 'vh'],name=f'edge_flow_lb_{net}_{i}_{j}_ve')
+
+        #print("Big : ",big)
+        for m1 in m1_columns:
+            v_i, h = int(m1.split('_')[1]), int(m1.split('_')[2])
+            #print (m1,v_i,h)
+            v_index = via_positions.index(v_i)
+            if h == 2 :
+                model.addConstr(y_n_c_r[net][f"m1_{v_i}_{h-1}", m1, f"vh"] == vh_n_v[net][v_index], name=f"vh_enable_{net}_{v_i}")
+                model.addConstr(1 - vh_n_v[net][v_index] >= v_n_v[net][h-1,v_index], name=f"m1_cross_check_1_{net}_{v_i}")
+                model.addConstr(1 - vh_n_v[net][v_index] >= v_n_v[net][h,v_index], name=f"m1_cross_check_2_{net}_{v_i}")
+            model.addConstr(y_n_c_r[net][m1, f"pv_{v_i}_{h}", f"ve"] <= vh_n_v[net][v_index]+v_n_v[net][h,v_index], name=f"via_enable_{net}_pv_{v_i}_{h}")
+            model.addConstr(y_n_c_r[net][m1, f"nv_{v_i}_{h}", f"ve"] <= vh_n_v[net][v_index]+v_n_v[net][h,v_index], name=f"via_enable_{net}_nv_{v_i}_{h}")
+            if MAX_TRACK % 2 == 1:
+                model.addConstr(y_n_c_r[net][m1, f"middle_{v_i}_{h}", f"ve"] <= vh_n_v[net][v_index]+v_n_v[net][h,v_index], name=f"via_enable_{net}_middle_{v_i}_{h}")
+        
+        # edge -> track cost
+        for i, j in Edges:
+            #print (i,j)
+            i_prefix, i_num = i.split('_')[0], int(i.split('_')[1])
+            j_prefix, j_num = j.split('_')[0], int(j.split('_')[1])
+            if not j_prefix.startswith('ac') and j_prefix != 'pp' and j_prefix != 'nn':
+                # flow -> row selection -> track cost
+                if i_num > j_num:
+                    i_num, j_num = j_num, i_num
+                    i_prefix, j_prefix = j_prefix, i_prefix
+                i_index = i_num // 3 - 1
+                if i_num not in column_positions[1]:  # only for 2 to 3
+                    i_diff_1 = 3*(i_index + 2)-i_num
+                    i_diff_2 = i_num-3*(i_index+1)
+                    if i_diff_1 <= i_diff_2 and i_diff_1 <= V_OVL:
+                        i_index = i_num // 3
+                        #print (i,i_num,i_index,iasdsa_index)
+                if j_num in column_positions[1]:
+                    j_index = j_num//3-1  # only for 2 to 3
+                #elif j_prefix == 'pv' or j_prefix == 'nv' or j_prefix == 'm1':
+                else: # only for 2 to 3
+                    j_index = min(len(columns),(j_num+2)//3)-1
+                    #print (j,j_num,j_index,len(columns),columns)
+                    j_diff_1 = j_num-3*j_index
+                    j_diff_2 = 3*(j_index+1)-j_num
+                    if j_diff_1 <= j_diff_2 and j_diff_1 <= V_OVL:
+                        j_index = j_index - 1
+                        #print (j,j_num,j_index,j_index_As)
+                
+                if i_prefix != 'm1':
+                    h = int(i.split('_')[2])
+                    if j_prefix == 'middle':
+                        if h == 1:
+                            target_rows = [middle_row]
+                        elif h == 2:
+                            target_rows = [dh_middle_row]
+                    elif j_prefix == 'pv':
+                        if h == 1:
+                            target_rows = pmos_rows
+                        elif h == 2:
+                            target_rows = dh_pmos_rows
+                    elif j_prefix == 'nv':
+                        if h == 1:
+                            target_rows = nmos_rows
+                        elif h == 2:
+                            target_rows = dh_nmos_rows
+                    for r in target_rows:
+                        #if j_prefix == 'pp' or j_prefix == 'nn' or j_prefix == 'ac':
+                        #    model.addConstr(y_n_c_r[net][i,j,r] == c_mar_row[net,j][r],name=f"link_c_mar_row_to_y_n_c_r_{net}_{i}_{j}_{r}")
+                        for c in range(i_index, j_index+1):
+                            model.addConstr(
+                                t_n_c_r[net][c, r] >= y_n_c_r[net][i, j, r],
+                                name=f"t_activation_{net}_{i}_{j}_{c}_{r}"
+                            )
+                        if i_index - 1 >= 0:  # Ensure valid index
+                            model.addConstr(y_n_c_r[net][i, j, r] <= t_n_c_r[net][i_index - 1, r] + t_n_c_r[new_net_name][i_index - 1, r],name=f"logical_constraint_{net}_{i}_{j}_i_index_minus_1_{r}")
+                        if j_index+1 <= len(columns) - 1:
+                            model.addConstr(y_n_c_r[net][i, j, r] <= t_n_c_r[net][j_index+1, r] + t_n_c_r[new_net_name][j_index+1, r],name=f"logical_constraint_{net}_{i}_{j}_j_index_{r}")      
+                else:
+                    if j_prefix == 'm1':
+                        hj = int(j.split('_')[2])
+                        h = int(i.split('_')[2])
+                        if h == hj :
+                            if h == 1:
+                                target_rows = upper_rows
+                            elif h == 2:
+                                target_rows = dh_upper_rows
+                            for r in target_rows:
+                                if i_index != j_index:
+                                    # Add constraints for all `c` in the range [i_index, j_index]
+                                    for c in range(i_index, j_index+1):
+                                        model.addConstr(
+                                            ut_n_c_r[net][c, r] >= y_n_c_r[net][i, j, r],
+                                            name=f"t_activation_{net}_{i}_{j}_{c}_{r}"
+                                        )
+                                    if i_index - 1 >= 0:  # Ensure valid index
+                                        model.addConstr(
+                                            y_n_c_r[net][i, j, r] <= ut_n_c_r[net][i_index - 1, r] + ut_n_c_r[new_net_name][i_index - 1, r],
+                                            name=f"logical_constraint_{net}_{i}_{j}_i_index_minus_2_{r}"
+                                        )
+                                    if j_index+1 <= len(columns) - 1:
+                                        model.addConstr(
+                                            y_n_c_r[net][i, j, r] <= ut_n_c_r[net][j_index+1, r] + ut_n_c_r[new_net_name][j_index+1, r],
+                                            name=f"logical_constraint_{net}_{i}_{j}_j_index_{r}"
+                                        )
+                   
+        #print (net,cap)
+        for pos_i in sorted_connection_points:
+            #print (pos_i)
+            if pos_i.startswith('ach'):
+                i_prefix, i_num = pos_i.split('_')[0], int(pos_i.split('_')[1])
+                h = 2
+            else:    
+                i_prefix, i_num, h = pos_i.split('_')[0], int(pos_i.split('_')[1]), int(pos_i.split('_')[2])
+            if i_prefix == 'middle':
+                if h == 1:
+                    target_rows = [middle_row]
+                elif h == 2:
+                    target_rows = [dh_middle_row]
+            elif i_prefix == 'pv':
+                if h == 1:
+                    target_rows = pmos_rows
+                elif h == 2:
+                    target_rows = dh_pmos_rows
+            elif i_prefix == 'nv':
+                if h == 1:
+                    target_rows = nmos_rows
+                elif h == 2:
+                    target_rows = dh_nmos_rows
+            elif i_prefix == 'm1':
+                if h == 1:
+                    target_rows = upper_rows
+                elif h == 2:
+                    target_rows = dh_upper_rows
+            #print (pos_i,i_prefix,i_num)
+            if i_prefix == 'm1':
+                #rint (pos_i,target_rows)
+                if h == 1:
+                    inflow = gp.quicksum(f_n_c_ur[net][j, k, r] for j, k in Edges_m1 if k == pos_i and j.startswith('m1') for r in target_rows)
+                    outflow = gp.quicksum(f_n_c_r[net][j, k, 'vh'] for j, k in Edges_vh if j == pos_i) + gp.quicksum(f_n_c_ur[net][j, k, r] for j, k in Edges_m1 if j == pos_i and k.startswith('m1') for r in target_rows) + gp.quicksum(f_n_c_ur[net][j, k, 've'] for j, k in Edges_m1 if j == pos_i and not k.startswith('m1'))
+                if h == 2 :
+                    inflow = gp.quicksum(f_n_c_r[net][j, k, 'vh'] for j, k in Edges_vh if k == pos_i) + gp.quicksum(f_n_c_ur[net][j, k, r] for j, k in Edges_m1 if k == pos_i and j.startswith('m1') for r in target_rows)
+                    outflow = gp.quicksum(f_n_c_ur[net][j, k, r] for j, k in Edges_m1 if j == pos_i and k.startswith('m1') for r in target_rows) + gp.quicksum(f_n_c_ur[net][j, k, 've'] for j, k in Edges_m1 if j == pos_i and not k.startswith('m1'))
+            elif i_prefix == 'pv' or i_prefix == 'nv' or i_prefix == 'middle':
+                #print (pos_i,target_rows)
+                if i_num in column_positions[1]:
+                    outflow = gp.quicksum(f_n_c_r[net][j, k, r] for j, k in Edges_m0 if j == pos_i for r in target_rows) + gp.quicksum(f_n_c_r[net][j, k, 'co'] for j, k in Edges_net if j == pos_i)
+                    if i_num in via_positions :
+                        inflow = gp.quicksum(f_n_c_r[net][j, k, r] for j, k in Edges_m0 if k == pos_i for r in target_rows) + gp.quicksum(f_n_c_ur[net][j, k, 've'] for j, k in Edges_m1 if k == pos_i)
+                    else :
+                        inflow = gp.quicksum(f_n_c_r[net][j, k, r] for j, k in Edges_m0 if k == pos_i for r in target_rows)
+                else :
+                    inflow = gp.quicksum(f_n_c_r[net][j, k, r] for j, k in Edges_m0 if k == pos_i for r in target_rows) + gp.quicksum(f_n_c_ur[net][j, k, 've'] for j, k in Edges_m1 if k == pos_i)
+                    outflow = gp.quicksum(f_n_c_r[net][j, k, r] for j, k in Edges_m0 if j == pos_i for r in target_rows)
+            else :
+                inflow = gp.quicksum(f_n_c_r[net][j, k, 'co'] for j, k in Edges_net if k == pos_i)
+                outflow = 0
+
+            net_flow[net, pos_i] = inflow - outflow
+            # Introduce auxiliary variable cap_i
+            #cap_i[net, pos_i] = model.addVar(vtype=gp.GRB.INTEGER, lb=-cap, ub=cap, name=f"cap_{net}_{pos_i}")
+            # Combine root node and non-root constraints
+            # If is_root_node[net, pos_i] is True -> cap_i = 1 - sum_actives
+            # If is_root_node[net, pos_i] is False -> cap_i = 1 or -1
+            if pos_i in wo_via_points:
+                #s_i[net, pos_i] = model.addVar(vtype=gp.GRB.BINARY, name=f"s_{net}_{pos_i}")
+                #model.addConstr(s_i[net, pos_i]<=indicator_i_vars[net, pos_i],name=f"binary_on_off_{net}_{pos_i}")
+                model.addGenConstrIndicator(
+                    is_root_node[net, pos_i], True,
+                    #cap_i[net, pos_i] == gp.LinExpr(1.0) - sum_actives,
+                    ##cap_i[net, pos_i] == 1 - sum_actives,
+                    net_flow[net, pos_i] == 1 - sum_actives,
+                    #cap_i[net, pos_i] == -1,
+                    name=f"t_definition_root_{net}_{pos_i}"
+                )
+                model.addGenConstrIndicator(
+                    is_root_node[net, pos_i], False,
+                    #cap_i[net, pos_i] == -indicator_i_vars[net, pos_i] + 2 * s_i[net, pos_i],
+                    ##cap_i[net, pos_i] == indicator_i_vars[net, pos_i],
+                    net_flow[net, pos_i] == indicator_i_vars[net, pos_i],
+                    name=f"t_definition_non_root_{net}_{pos_i}"
+                )
+            else:
+                #print(pos_i)
+                ##model.addConstr(cap_i[net, pos_i] == 0, name=f"middle_node_{net}_{pos_i}")
+                model.addConstr(net_flow[net, pos_i] == 0, name=f"middle_node_{net}_{pos_i}")
+            #model.addConstr(
+            #    net_flow[net, pos_i] == cap_i[net, pos_i],
+            #    name=f"flow_conservation_{net}_{pos_i}"
+            #)
+
+# Prevent different nets from using the same via position
+for v in via_indices:
+    #model.addConstr(gp.quicksum(vh_n_v[net][v] for net in total_nets if net not in power_net) <= 1,name=f"vh_conflict_{v}")
+    for h in height:
+        model.addConstr(gp.quicksum(v_n_v[net][h,v] + vh_n_v[net][v] for net in total_nets if net not in power_net) <= 1,name=f"via_conflict_{h}_{v}")
+
+# Prevent different nets from using the same row selection
+# Prevent consecutive row usage
+for edge in Edges_m0:
+    i, j = edge
+    j_prefix, j_num, h = j.split('_')[0], int(j.split('_')[1]), int(j.split('_')[2])
+    if j_prefix == 'middle':
+        if h == 1:
+            target_rows = [middle_row]
+        elif h == 2:
+            target_rows = [dh_middle_row]
+    elif j_prefix == 'pv':
+        if h == 1:
+            target_rows = pmos_rows
+        elif h == 2:
+            target_rows = dh_pmos_rows
+    elif j_prefix == 'nv':
+        if h == 1:
+            target_rows = nmos_rows
+        elif h == 2:
+            target_rows = dh_nmos_rows
+    for r in target_rows:
+        model.addConstr(gp.quicksum(y_n_c_r[net][i,j,r] for net in total_nets if net not in power_net)<= 1,name=f"row_selection_conflict_{i}_{j}_{r}")
+    for net in total_nets:
+        if net not in power_net and len(target_rows)>1:
+            consecutive = 2
+            for r_start in range(len(target_rows) - consecutive + 1):
+                con_r = target_rows[r_start : r_start + consecutive]
+                #print(i,j,net,r_start,con_r)
+                model.addConstr(gp.quicksum(y_n_c_r[net][i,j,r] for r in con_r) <= 1,name=f"consecutive_row_usage_conflict_for_one_net_{net}_{i}_{j}")
+
+for edge in Edges_m1:
+    i, j = edge
+    j_prefix, j_num, h = j.split('_')[0], int(j.split('_')[1]), int(j.split('_')[2])
+    if j_prefix == 'm1':
+        if h == 1:
+            target_rows = upper_rows
+        elif h == 2:
+            target_rows = dh_upper_rows
+    if not j.startswith('pv_') and j.startswith('nv_') and j.startswith('middle_'):
+        for r in target_rows:
+            model.addConstr(gp.quicksum(y_n_c_r[net][i,j,r] for net in total_nets if net not in power_net)<= 1,name=f"row_selection_conflict_{i}_{j}_{r}")
+
+# local hole blocking
+for net in total_nets:
+    if net not in power_net and net != new_net_name:
+        for r in rows:
+            for c in columns[1:-1]:
+                model.addConstr(
+                    t_n_c_r[net][c, r] <= t_n_c_r[net][c-1, r] + t_n_c_r[net][c+1, r],
+                    name=f"no_len1_island_{net}_{c}_{r}"
+                )
+
+# Cell-Flex
+# horizontal pin separation -> horizontal pin extendability
+signal_nets = [net for net in io_pins if net not in power_net]
+pin_interruption = 2
+pin_extend_reward={}
+one_pin_net_binary={}
+cond = {}
+M = 20
+search_columns = [c for c in gate_cols[1] if 1 <= c and c <= len(columns)-2]
+for h in height:
+    if h == 1:
+        target_rows = rows
+    if h == 2:
+        target_rows = dh_rows
+    for c in search_columns:
+        extendability = model.addVar(vtype=gp.GRB.BINARY, name=f"l_e_{h}_{c}")
+        neighbor_cols = [c + dc for dc in range(-pin_interruption, pin_interruption+1) if 0 <= c + dc < len(columns)]
+        #print (c,neighbor_cols)
+        pin_extend_reward[h,c] = model.addVar(vtype=gp.GRB.INTEGER, name=f"p_e_r_{h}_{c}")
+        cond[h,c]={}
+        one_pin_net_binary[h,c]={}
+        for r in target_rows:
+            row_metal = gp.quicksum(t_n_c_r[net][ni,r] for net in total_nets if net not in power_net for ni in neighbor_cols)
+            for s_n in signal_nets:
+                cond[h,c][r, s_n] = model.addVar(vtype=gp.GRB.BINARY,name=f"{h}_cond_col{c}_row{r}_net{s_n}")
+                pin_metal = gp.quicksum(t_n_c_r[s_n][ni,r] for ni in neighbor_cols)
+                one_pin_net_binary[h,c][s_n] = model.addVar(vtype=gp.GRB.BINARY, name=f"one_pin_net_bin_{h}_{c}_{s_n}")
+                pin_is_there = model.addVar(vtype=GRB.BINARY, name=f"pin_is_there_{r}_{s_n}")
+                
+                model.addConstr(sum_actives_vars[s_n] <= 1 + M * (1-one_pin_net_binary[h,c][s_n]),name=f"via_used_binary_upper")
+                model.addConstr(sum_actives_vars[s_n] >= 2 - M * one_pin_net_binary[h,c][s_n],name=f"via_used_binary_lower")
+                model.addConstr(cond[h,c][r,s_n] <= one_pin_net_binary[h,c][s_n],name=f"cond_via_{h}_{c}_{r}_{s_n}")
+
+                model.addConstr(cond[h,c][r,s_n] <= pin_metal,name=f"cond_pinmetal_{h}_{c}_{r}_{s_n}")
+                model.addConstr(pin_is_there <= pin_metal,name=f"pin_is_there1_pinmetal_{h}_{c}_{r}_{s_n}")
+                model.addConstr(pin_is_there >= pin_metal/len(neighbor_cols),name=f"pin_is_there2_pinmetal_{h}_{c}_{r}_{s_n}")
+
+                model.addConstr(row_metal - pin_metal <= M*(1-cond[h,c][r,s_n]),name=f"cond_upper_{h}_{c}_{r}_{s_n}")
+                model.addConstr(row_metal - pin_metal >= one_pin_net_binary[h,c][s_n] + pin_is_there - 1 - cond[h,c][r,s_n],name=f"cond_lower_{h}_{c}_{r}_{s_n}")
+
+        model.addConstr(pin_extend_reward[h,c]==gp.quicksum(cond[h,c][r,s_n] for r in target_rows for s_n in signal_nets),name=f"reward_make_for_{c}")
+
+# vertical pin separation
+z_dict = {}  # dictionary - z_{c,net1,net2,r1,r2}
+for h in height:
+    if h == 1:
+        target_rows = rows
+    if h == 2:
+        target_rows = dh_rows
+    for c in gate_cols[h][:-1]:
+        pos_a = f"ac_{3 + 3 * c}_{h}"
+        pos_a_next = f"ac_{3 + 3 * (c+2)}_{h}"
+        for net1 in signal_nets:
+            for net2 in signal_nets:
+                if net1 == net2:
+                    continue
+                for r1 in target_rows:
+                    for r2 in target_rows:
+                        if abs(r1-r2) >= 3:
+                            z_dict[(c,net1,net2,r1,r2)] = model.addVar(vtype=gp.GRB.BINARY,name=f"z_{c}_{net1}_{net2}_{r1}_{r2}")
+                            # 1) z <= c_mar_row[net1, j_c][r1]
+                            model.addConstr(z_dict[(c,net1,net2,r1,r2)] <= c_mar_row[net1, pos_a][r1], name=f"z_le_net1_{c}_{net1}_{r1}")
+                            # 2) z <= c_mar_row[net2, j_c1][r2]
+                            model.addConstr(z_dict[(c,net1,net2,r1,r2)] <= c_mar_row[net2, pos_a_next][r2], name=f"z_le_net2_{c}_{net2}_{r2}")
+                            # 3) z >= c_mar_row[net1, j_c][r1] + c_mar_row[net2, j_c1][r2] - 1
+                            model.addConstr(z_dict[(c,net1,net2,r1,r2)] >= c_mar_row[net1, pos_a][r1] + c_mar_row[net2, pos_a_next][r2] - 1, name=f"z_ge_{c}_{net1}_{net2}_{r1}_{r2}")
+
+
+# OBS misalign penalty
+obs_misalign_penalty={} # OBS is in the row
+if len(height) > 1:
+    target_upper_rows = upper_rows+dh_upper_rows
+else :
+    target_upper_rows = upper_rows
+print (target_upper_rows)
+for r in target_upper_rows:
+    obs_misalign_penalty[r] = model.addVar(vtype=gp.GRB.BINARY, name=f"o_m_p_{r}")
+    model.addConstr(obs_misalign_penalty[r] <= gp.quicksum(ut_n_c_r[net][c,r] for net in total_nets if net not in io_pins for c in columns) ,name=f"o_m_p_constr1_{r}")
+    for net in total_nets:
+        if net not in io_pins:
+            for c in columns:
+                model.addConstr(obs_misalign_penalty[r] >= ut_n_c_r[net][c,r] ,name=f"o_m_p_constr2_{net}_{c}_{r}")
+
+# Track cost constraints per row
+for c in columns:
+    for r in rows+dh_rows:
+        model.addConstr(
+            t_c_r[c, r] == gp.quicksum(t_n_c_r[net][c, r] for net in total_nets if net not in power_net),
+            name=f"track_cost_{c}_{r}"
+        )
+        model.addConstr(
+            t_c_r[c, r] + t_n_c_r[new_net_name][c, r] <= 1,
+            name=f"max_track_{c}_{r}"
+        )
+    for r in upper_rows+dh_upper_rows:
+        model.addConstr(
+            ut_c_r[c, r] == gp.quicksum(ut_n_c_r[net][c, r] for net in total_nets if net not in power_net),
+            #ut_c_r[c, r] == gp.quicksum(ut_n_c_r[net][c, r] for net in new_nets),
+            name=f"uppertrack_cost_{c}_{r}"
+        )
+        model.addConstr(
+            ut_c_r[c, r] + ut_n_c_r[new_net_name][c, r]  <= 1,
+            name=f"max_uppertrack_{c}_{r}"
+        )
+
+# Total track cost per column
+for h in height:
+    for c in columns:
+        if h == 1:
+            model.addConstr(
+                ut_c[h,c] == gp.quicksum(ut_c_r[c, r] for r in upper_rows),
+                name=f"uppertrack_cost_{h}_{c}"
+            )
+            model.addConstr(
+                t_c[h,c] == gp.quicksum(t_c_r[c, r] for r in rows),
+                name=f"track_cost_{h}_{c}"
+            )
+        elif h == 2:
+            model.addConstr(
+                ut_c[h,c] == gp.quicksum(ut_c_r[c, r] for r in dh_upper_rows),
+                name=f"uppertrack_cost_{h}_{c}"
+            )
+            model.addConstr(
+                t_c[h,c] == gp.quicksum(t_c_r[c, r] for r in dh_rows),
+                name=f"track_cost_{h}_{c}"
+            )
+        model.addConstr(
+            t_c[h,c] <= MAX_TRACK,
+            name=f"max_track_{h}_{c}"
+        )
+
+# Objective function
+via_cost = 60
+via_pdn_cost = 100
+vh_cost = 90
+vh_pdn_cost = 110
+lowertrack_cost = 3
+uppertrack_cost = 6
+eol_cost = 1
+total_via_cost = vh_cost * gp.quicksum(vh_n_v[net][v]  for net in total_nets if net not in power_net for v in via_indices if 4*(v+1) % 3 !=0) + via_cost * gp.quicksum(v_n_v[net][h,v]  for net in total_nets if net not in power_net for h in height for v in via_indices if 4*(v+1) % 3 !=0) + vh_pdn_cost * gp.quicksum(vh_n_v[net][v]  for net in total_nets if net not in power_net for v in via_indices if 4*(v+1) % 3 ==0) + via_pdn_cost * gp.quicksum(v_n_v[net][h,v]  for net in total_nets if net not in power_net for h in height for v in via_indices if 4*(v+1) % 3 ==0)
+#total_via_cost = vh_cost * gp.quicksum(vh_n_v[net][v]  for net in total_nets if net not in power_net for v in via_indices) + via_cost * gp.quicksum(v_n_v[net][h,v]  for net in total_nets if net not in power_net for h in height for v in via_indices)
+#total_via_cost = via_cost * gp.quicksum(v_n_v[net][v] for net in new_nets for v in valid_via_indices[net])
+total_track_cost = lowertrack_cost * gp.quicksum(t_c[h,c] for h in height for c in columns)
+total_uppertrack_cost = 2 * uppertrack_cost * gp.quicksum(ut_c[h,c] for h in height for c in columns)
+total_eol_cost = eol_cost * gp.quicksum(t_n_c_r[new_net_name][c,r] for c in columns for r in rows+dh_rows)
+total_uppertrack_eol_cost = eol_cost * uppertrack_cost * gp.quicksum(ut_n_c_r[new_net_name][c,r] for c in columns for r in upper_rows+dh_upper_rows)
+#model.setObjective(total_track_cost + total_via_cost + total_uppertrack_cost + total_eol_cost + total_uppertrack_eol_cost, GRB.MINIMIZE)
+
+# Cell-Flex
+o_m_p_cost = 100
+obs_penalty_1 = o_m_p_cost * gp.quicksum(obs_misalign_penalty[r] for r in upper_rows)
+# Reward
+# reward
+p_e_cost = 1
+pin_extendability = p_e_cost*gp.quicksum(pin_extend_reward[h,c] for h in height for c in search_columns)
+p_s_cost = 1
+pin_separation = p_s_cost*gp.quicksum(z_dict[idx] for idx in z_dict)
+# Final MINIMIZE FUNCTION
+#model.setObjective(total_track_cost + total_via_cost + total_uppertrack_cost + total_eol_cost + total_uppertrack_eol_cost, GRB.MINIMIZE)
+model.setObjective(total_track_cost + total_via_cost + total_uppertrack_cost + total_eol_cost + total_uppertrack_eol_cost + obs_penalty_1 - pin_extendability - pin_separation ,gp.GRB.MINIMIZE)
+#model.setObjective(total_track_cost + total_via_cost + total_uppertrack_cost + total_eol_cost + total_uppertrack_eol_cost + obs_penalty_1 - pin_extendability,gp.GRB.MINIMIZE)
+#model.setObjective(total_track_cost + total_via_cost + total_uppertrack_cost + total_eol_cost + total_uppertrack_eol_cost,gp.GRB.MINIMIZE)
+
 # objective function for only placement
-    model.setObjective(
-        gp.quicksum(flow_estimator[h,c] for h in height for c in gate_cols),
-        GRB.MINIMIZE
-    )
+# pmos_terms = []
+# for h in height:
+#     for c in range(num_cols):
+#         for net in unique_pmos_nets:
+#             weight = 0.9 if net == "VDD" else 1.0
+#             pmos_terms.append(weight * pmos_net[(net, h, c)])
+
+# nmos_terms = []
+# for h in height:
+#     for c in range(num_cols):
+#         for net in unique_nmos_nets:
+#             weight = 0.9 if net == "VSS" else 1.0
+#             nmos_terms.append(weight * nmos_net[(net, h, c)])
+#model.setObjective(gp.quicksum(pmos_terms) + gp.quicksum(nmos_terms), GRB.MINIMIZE)
+#model.setObjective(gp.quicksum(misalign_c[h,c] for h in height for c in gate_cols[h]), GRB.MINIMIZE)
+#model.setObjective(
+#    gp.quicksum(sum_actives_vars[net] for net in total_nets if net not in power_net),
+#    GRB.MINIMIZE
+#)
 
 # Optimize model
 start_time = time.perf_counter()
@@ -1749,65 +1716,64 @@ if model.status == GRB.OPTIMAL:
             else:
                 pr("NMOS:", h, nmos_columns[h])
                 pr("PMOS:", h, pmos_columns[h])
-    
-    if routing_switch == 'on':
-	    pr("\nt_n_c_r and ut_n_c_r values:")
-	    for net in total_nets:
-	        if net not in power_net:
-	            pr(f"  Net {net}: Via positions {best_via_locations.get(net, [])}, {best_vh_locations.get(net, [])}")
-	            for h in sorted(height, reverse=True):
-	                if h == 1:
-	                    for r in rows:
-	                        c_t_c = {column_positions[h][c]: t_n_c_r[net][c, r].X for c in columns}
-	                        s_c_p = sorted(c_t_c.keys())
-	                        b_t_c_l = [int(round(c_t_c[c_pos])) for c_pos in s_c_p]
-	                        pr(f"  Net {net}, H {h}, Row {r}: {b_t_c_l}")
-	                elif h == 2:
-	                    for r in dh_rows:
-	                        c_t_c = {column_positions[h][c]: t_n_c_r[net][c, r].X for c in columns}
-	                        s_c_p = sorted(c_t_c.keys())
-	                        b_t_c_l = [int(round(c_t_c[c_pos])) for c_pos in s_c_p]
-	                        pr(f"  Net {net}, H {h}, Row {r}: {b_t_c_l}")
-	            for h in sorted(height, reverse=True):
-	                if h == 1:
-	                    for r in upper_rows:
-	                        c_ut_c = {column_positions[h][c]: ut_n_c_r[net][c, r].X for c in columns}
-	                        s_c_p = sorted(c_ut_c.keys())
-	                        b_ut_c_l = [round(int(c_ut_c[c_pos])) for c_pos in s_c_p]
-	                        pr(f"  Net {net}, H {h}, Row {r}: {b_ut_c_l}")
-	                if h == 2:
-	                    for r in dh_upper_rows:
-	                        c_ut_c = {column_positions[h][c]: ut_n_c_r[net][c, r].X for c in columns}
-	                        s_c_p = sorted(c_ut_c.keys())
-	                        b_ut_c_l = [round(int(c_ut_c[c_pos])) for c_pos in s_c_p]
-	                        pr(f"  Net {net}, H {h}, Row {r}: {b_ut_c_l}")
-	    for h in sorted(height, reverse=True):
-	        if h == 1:
-	            target_rows = rows
-	            target_upper_rows = upper_rows
-	        elif h == 2:
-	            target_rows = dh_rows
-	            target_upper_rows = dh_upper_rows
-	        for r in target_rows:
-	            c_t_c = {column_positions[h][c]: t_n_c_r[new_net_name][c, r].X for c in columns}
-	            s_c_p = sorted(c_t_c.keys())
-	            b_t_c_l = [int(c_t_c[c_pos]) for c_pos in s_c_p]
-	            pr(f"  Net {new_net_name}, Row {r}: {b_t_c_l}")
-	        for r in target_upper_rows:
-	            c_t_c = {column_positions[h][c]: ut_n_c_r[new_net_name][c, r].X for c in columns}
-	            s_c_p = sorted(c_t_c.keys())
-	            b_t_c_l = [int(c_t_c[c_pos]) for c_pos in s_c_p]
-	            pr(f"  Net {new_net_name}, Row {r}: {b_t_c_l}")
-	
-	    # Results
-	    pr(f"\nOptimal total cost: {total_cost}")
-	    pr("Optimal Via positions:")
-	    for net in total_nets:
-	        if net not in power_net:
-	            pr(f"  Net {net}: Via positions {best_via_locations.get(net, [])}, {best_vh_locations.get(net, [])}")
-	    for h in sorted(best_track_cost_list.keys(), reverse=True):  # Reverse order
-	        pr(f"{h} height Column Track Costs: {best_track_cost_list[h]}")
-    
+                
+    pr("\nt_n_c_r and ut_n_c_r values:")
+    for net in total_nets:
+        if net not in power_net:
+            pr(f"  Net {net}: Via positions {best_via_locations.get(net, [])}, {best_vh_locations.get(net, [])}")
+            for h in sorted(height, reverse=True):
+                if h == 1:
+                    for r in rows:
+                        c_t_c = {column_positions[h][c]: t_n_c_r[net][c, r].X for c in columns}
+                        s_c_p = sorted(c_t_c.keys())
+                        b_t_c_l = [int(round(c_t_c[c_pos])) for c_pos in s_c_p]
+                        pr(f"  Net {net}, H {h}, Row {r}: {b_t_c_l}")
+                elif h == 2:
+                    for r in dh_rows:
+                        c_t_c = {column_positions[h][c]: t_n_c_r[net][c, r].X for c in columns}
+                        s_c_p = sorted(c_t_c.keys())
+                        b_t_c_l = [int(round(c_t_c[c_pos])) for c_pos in s_c_p]
+                        pr(f"  Net {net}, H {h}, Row {r}: {b_t_c_l}")
+            for h in sorted(height, reverse=True):
+                if h == 1:
+                    for r in upper_rows:
+                        c_ut_c = {column_positions[h][c]: ut_n_c_r[net][c, r].X for c in columns}
+                        s_c_p = sorted(c_ut_c.keys())
+                        b_ut_c_l = [round(int(c_ut_c[c_pos])) for c_pos in s_c_p]
+                        pr(f"  Net {net}, H {h}, Row {r}: {b_ut_c_l}")
+                if h == 2:
+                    for r in dh_upper_rows:
+                        c_ut_c = {column_positions[h][c]: ut_n_c_r[net][c, r].X for c in columns}
+                        s_c_p = sorted(c_ut_c.keys())
+                        b_ut_c_l = [round(int(c_ut_c[c_pos])) for c_pos in s_c_p]
+                        pr(f"  Net {net}, H {h}, Row {r}: {b_ut_c_l}")
+    for h in sorted(height, reverse=True):
+        if h == 1:
+            target_rows = rows
+            target_upper_rows = upper_rows
+        elif h == 2:
+            target_rows = dh_rows
+            target_upper_rows = dh_upper_rows
+        for r in target_rows:
+            c_t_c = {column_positions[h][c]: t_n_c_r[new_net_name][c, r].X for c in columns}
+            s_c_p = sorted(c_t_c.keys())
+            b_t_c_l = [int(c_t_c[c_pos]) for c_pos in s_c_p]
+            pr(f"  Net {new_net_name}, Row {r}: {b_t_c_l}")
+        for r in target_upper_rows:
+            c_t_c = {column_positions[h][c]: ut_n_c_r[new_net_name][c, r].X for c in columns}
+            s_c_p = sorted(c_t_c.keys())
+            b_t_c_l = [int(c_t_c[c_pos]) for c_pos in s_c_p]
+            pr(f"  Net {new_net_name}, Row {r}: {b_t_c_l}")
+
+    # Results
+    pr(f"\nOptimal total cost: {total_cost}")
+    pr("Optimal Via positions:")
+    for net in total_nets:
+        if net not in power_net:
+            print(f"  Net {net}: Via positions {best_via_locations.get(net, [])}, {best_vh_locations.get(net, [])}")
+    for h in sorted(best_track_cost_list.keys(), reverse=True):  # Reverse order
+        pr(f"{h} height Column Track Costs: {best_track_cost_list[h]}")
+
 else:
     pr("No optimal solution found.")
     pr("GUIDE: Try increasing --dummy-for-ideal, or check whether --misalign-col is appropriate for this cell.")
