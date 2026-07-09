@@ -7,20 +7,20 @@ set_vdd -type primary VDD $VDD
 set_gnd -type primary VSS 0
 set_gnd -no_model     GND 0
 
-set_var slew_lower_rise 0.2
-set_var slew_lower_fall 0.2
-set_var slew_upper_rise 0.5
-set_var slew_upper_fall 0.5
+set_var slew_lower_rise 0.1
+set_var slew_lower_fall 0.1
+set_var slew_upper_rise 0.9
+set_var slew_upper_fall 0.9
 
-set_var measure_slew_lower_rise 0.2
-set_var measure_slew_lower_fall 0.2
-set_var measure_slew_upper_rise 0.5
-set_var measure_slew_upper_fall 0.5
+set_var measure_slew_lower_rise 0.1
+set_var measure_slew_lower_fall 0.1
+set_var measure_slew_upper_rise 0.9
+set_var measure_slew_upper_fall 0.9
 
-set_var delay_inp_rise 0.35
-set_var delay_inp_fall 0.35
-set_var delay_out_rise 0.35
-set_var delay_out_fall 0.35
+set_var delay_inp_rise 0.5
+set_var delay_inp_fall 0.5
+set_var delay_out_rise 0.5
+set_var delay_out_fall 0.5
 
 set_var def_arc_msg_level 0
 set_var process_match_pins_to_ports 1
