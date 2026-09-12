@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "track_count": 7,
+  "track_pitch_raw": 96,
+  "m0_power_rail_width_raw": 144,
+  "m0_power_rail_to_first_track_raw": -8,
+  "bpr_rail_width_raw": 128,
+  "act_bottom_anchor_raw": 104,
+  "legacy_act_center_anchor_raw": 166,
+  "sdcon": {
+    "near_y_offset_raw": 52,
+    "finger_length_raw": 196,
+    "far_enclosure_raw": 20
+  },
+  "row_scheme": {
+    "pmos_near_row_by_row_scheme": {
+      "4": 2,
+      "5": 3
+    }
+  }
+}

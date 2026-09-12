@@ -1,0 +1,1094 @@
+* gt2_6t_and2_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_and2_x1_w13_lvt A B Y VDD VSS
+MM7 Y NET20 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET20 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET20 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 NET20 B NET13 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8 Y NET20 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_and2_x2_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_and2_x2_w13_lvt A B Y VDD VSS
+MM7 Y NET20 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f1 Y NET20 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET20 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET20 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 NET20 B NET13 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8 Y NET20 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f1 Y NET20 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_and2_x3_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_and2_x3_w13_lvt A B Y VDD VSS
+MM7 Y NET20 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f1 Y NET20 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f2 Y NET20 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET20 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET20 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM8 Y NET20 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f1 Y NET20 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f2 Y NET20 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 NET20 B NET13 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_and2_x4_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_and2_x4_w13_lvt A B Y VDD VSS
+MM7 Y NET20 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f1 Y NET20 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f2 Y NET20 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f3 Y NET20 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET20 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET20 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM8 Y NET20 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f1 Y NET20 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f2 Y NET20 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f3 Y NET20 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 NET20 B NET13 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_and3_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_and3_x1_w13_lvt A B C Y VDD VSS
+MM11 NET20 C VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7 Y NET20 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET20 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET20 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM9 NET23 C VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8 Y NET20 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 NET20 B NET13 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A NET23 VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_ao211_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_ao211_x1_w13_lvt A1 A2 B C Y VDD VSS
+MM18 NET87 A2 NET41 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM27 Y NET87 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM19 NET87 C VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM28 NET87 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM17 NET41 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM26 Y NET87 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM15 NET86 C NET64 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM14 NET64 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 NET87 A1 NET86 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM16 NET87 A2 NET86 VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_ao21_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_ao21_x1_w13_lvt A1 A2 B Y VDD VSS
+MM19 NET67 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM18 NET67 A2 NET41 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM17 NET41 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM27 Y NET67 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM16 NET64 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM26 Y NET67 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM14 NET67 A1 NET64 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM15 NET67 A2 NET64 VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_ao22_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_ao22_x1_w13_lvt A1 A2 B1 B2 Y VDD VSS
+MM28 NET67 B1 NET69 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM18 NET41 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM27 Y NET67 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM19 NET69 B2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM17 NET67 A2 NET41 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM26 Y NET67 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM15 NET67 B2 NET64 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM14 NET67 B1 NET64 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 NET64 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM16 NET64 A1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_ao31_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_ao31_x1_w13_lvt A1 A2 A3 B Y VDD VSS
+MM27 Y NET91 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM18 NET91 A3 NET97 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM32 NET97 A2 NET98 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM19 NET91 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM17 NET98 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM26 Y NET91 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM14 NET92 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM31 NET91 A3 NET92 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 NET91 A2 NET92 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM16 NET91 A1 NET92 VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_ao32_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_ao32_x1_w13_lvt A1 A2 A3 B1 B2 Y VDD VSS
+MM18 NET91 A3 NET97 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM35 NET106 B2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM32 NET97 A2 NET98 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM19 NET91 B1 NET106 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM27 Y NET91 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM17 NET98 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM26 Y NET91 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM34 NET91 B2 NET92 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM14 NET91 B1 NET92 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM31 NET92 A3 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 NET92 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM16 NET92 A1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_aoi211_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_aoi211_x1_w13_lvt A1 A2 B C Y VDD VSS
+MM15 Y C NET86 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM14 NET86 B NET64 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 NET64 A1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM16 NET64 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM18 NET41 A2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM19 Y C VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM28 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM17 Y A1 NET41 VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_aoi21_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_aoi21_x1_w13_lvt A1 A2 B Y VDD VSS
+MM28 Y A2 NET78 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM29 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM30 NET78 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM31 Y B NET83 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM32 NET83 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM33 NET83 A1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+
+* gt2_6t_aoi22_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_aoi22_x1_w13_lvt A1 A2 B1 B2 Y VDD VSS
+MM15 NET64 B2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM14 NET64 B1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 Y A2 NET64 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM16 Y A1 NET64 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM28 NET69 B1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM18 NET41 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM19 Y B2 NET69 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM17 Y A2 NET41 VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+
+* gt2_6t_aoi22_xp5_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_aoi22_x2_w13_lvt A1 A2 B1 B2 Y VDD VSS
+MM5 Y B2 NET13 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM5_f1 Y B2 NET13 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM4 Y B1 NET13 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM4_f1 Y B1 NET13 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 NET13 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 NET13 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET13 A1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 NET13 A1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM9 Y B1 NET29 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM9_f1 Y B1 NET29 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8 NET30 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f1 NET30 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM7 NET29 B2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM7_f1 NET29 B2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM6 Y A2 NET30 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM6_f1 Y A2 NET30 VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_aoi31_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_aoi31_x1_w13_lvt A1 A2 A3 B Y VDD VSS
+MM18 NET98 A3 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM32 NET97 A2 NET98 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM19 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM17 Y A1 NET97 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM14 Y B NET92 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM31 NET92 A3 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 NET92 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM16 NET92 A1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_aoi32_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_aoi32_x1_w13_lvt A1 A2 A3 B1 B2 Y VDD VSS
+MM34 NET92 B2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM14 NET92 B1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM31 Y A3 NET92 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 Y A2 NET92 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM16 Y A1 NET92 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM18 NET98 A3 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM35 NET106 B2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM32 Y A2 NET97 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM19 Y B1 NET106 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM17 NET97 A1 NET98 VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_buf_x10_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_buf_x10_w13_lvt A Y VDD VSS
+MM2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f3 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f4 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f5 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f6 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f7 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f8 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f9 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f2 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f4 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f5 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f6 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f7 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f8 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f9 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_buf_x12_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_buf_x12_w13_lvt A Y VDD VSS
+MM2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f3 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f4 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f5 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f6 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f7 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f8 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f9 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f10 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f11 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f2 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f4 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f5 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f6 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f7 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f8 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f9 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f10 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f11 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_buf_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_buf_x1_w13_lvt A Y VDD VSS
+MM2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_buf_x2_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_buf_x2_w13_lvt A Y VDD VSS
+MM2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_buf_x3_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_buf_x3_w13_lvt A Y VDD VSS
+MM2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f2 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_buf_x4_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_buf_x4_w13_lvt A Y VDD VSS
+MM2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f3 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f2 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+
+* gt2_6t_buf_x6_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_buf_x6_w13_lvt A Y VDD VSS
+MM2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f3 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f4 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f5 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f2 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f4 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f5 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_buf_x8_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_buf_x8_w13_lvt A Y VDD VSS
+MM2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f2 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f3 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f4 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f5 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f6 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f7 Y NET13 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 NET13 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f2 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f3 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f4 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f5 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f6 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f7 Y NET13 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_bufx12f_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_bufx12f_x1_w13_lvt A Y VDD VSS
+MM1 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f3 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f4 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f5 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f6 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f7 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f8 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f9 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f10 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f11 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f12 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f13 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f14 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f15 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f16 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f17 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 AN A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 AN A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 AN A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f3 AN A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f4 AN A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f5 AN A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f2 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f3 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f4 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f5 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f6 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f7 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f8 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f9 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f10 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f11 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f12 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f13 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f14 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f15 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f16 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f17 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2 AN A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 AN A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2_f2 AN A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2_f3 AN A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2_f4 AN A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2_f5 AN A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+
+* gt2_6t_bufx6f_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_bufx6f_x1_w13_lvt A Y VDD VSS
+MM1 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f3 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f4 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f5 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f6 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f7 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f8 Y AN VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 AN A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 AN A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 AN A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f2 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f3 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f4 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f5 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f6 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f7 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f8 Y AN VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2 AN A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 AN A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2_f2 AN A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_decapx2b_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_decapx2b_x1_w13_lvt VDD VSS
+MM2 NET011 NET012 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 NET011 NET012 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2_f2 NET011 NET012 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0 NET011 NET011 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 NET011 NET011 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 NET011 NET011 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET012 NET011 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 NET012 NET011 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 NET012 NET011 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 NET012 NET012 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 NET012 NET012 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3_f2 NET012 NET012 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+
+* gt2_6t_hb2_xp67_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_hb2_x1_w13_lvt A Y VDD VSS
+MM5 Y ABAR VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET17 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0 ABAR A NET17 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM4 Y ABAR VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM3 ABAR A NET16 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET16 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_hb3_xp67_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_hb3_x1_w13_lvt A Y VDD VSS
+MM3 Y NET11 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET18 A NET19 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1 NET11 A NET18 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET19 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7 NET16 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM4 Y NET11 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM5 NET17 A NET16 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM6 NET11 A NET17 VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_hb4_xp67_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_hb4_x1_w13_lvt A Y VDD VSS
+MM9 NET17 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8 NET5 A NET18 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 NET16 A NET17 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0 Y NET5 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM7 NET18 A NET16 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM6 NET5 A NET19 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM5 NET19 A NET20 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET20 A NET21 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM4 NET21 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1 Y NET5 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_inv_x10_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_inv_x10_w13_lvt A Y VDD VSS
+MM0 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f3 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f4 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f5 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f6 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f7 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f8 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f9 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f3 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f4 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f5 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f6 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f7 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f8 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f9 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_inv_x11_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_inv_x16_w13_lvt A Y VDD VSS
+MM0 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f3 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f4 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f5 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f6 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f7 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f8 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f9 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f10 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f11 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f12 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f13 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f14 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f15 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f3 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f4 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f5 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f6 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f7 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f8 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f9 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f10 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f11 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f12 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f13 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f14 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f15 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_inv_x12_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_inv_x12_w13_lvt A Y VDD VSS
+MM0 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f3 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f4 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f5 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f6 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f7 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f8 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f9 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f10 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f11 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f3 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f4 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f5 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f6 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f7 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f8 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f9 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f10 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f11 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_inv_x13_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_inv_x20_w13_lvt A Y VDD VSS
+MM0 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f3 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f4 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f5 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f6 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f7 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f8 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f9 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f10 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f11 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f12 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f13 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f14 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f15 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f16 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f17 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f18 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f19 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f3 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f4 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f5 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f6 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f7 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f8 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f9 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f10 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f11 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f12 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f13 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f14 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f15 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f16 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f17 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f18 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f19 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_inv_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_inv_x1_w13_lvt A Y VDD VSS
+MM0 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_inv_x2_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_inv_x2_w13_lvt A Y VDD VSS
+MM0 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_inv_x3_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_inv_x3_w13_lvt A Y VDD VSS
+MM0 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_inv_x4_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_inv_x4_w13_lvt A Y VDD VSS
+MM0 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f3 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f3 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+
+* gt2_6t_inv_x6_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_inv_x6_w13_lvt A Y VDD VSS
+MM0 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f3 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f4 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f5 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f3 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f4 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f5 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_inv_x8_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_inv_x8_w13_lvt A Y VDD VSS
+MM0 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f3 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f4 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f5 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f6 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f7 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f3 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f4 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f5 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f6 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f7 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+
+
+* gt2_6t_nand2_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_nand2_x1_w13_lvt A B Y VDD VSS
+MM3 Y A NET13 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_nand2_x2_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_nand2_x2_w13_lvt A B Y VDD VSS
+MM8 Y A NET17 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 NET13 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM7 NET17 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 Y B NET13 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_nand2_x3_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_nand2_x3_w13_lvt A B Y VDD VSS
+MM10 NET23 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM9 Y B NET23 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8 Y A NET17 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM7 NET17 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 Y A NET13 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_nand2_x4_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_nand2_x4_w13_lvt A B Y VDD VSS
+MM12 Y A NET29 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM11 NET29 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM10 NET23 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM9 Y B NET23 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM7 NET17 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8 Y A NET17 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 Y A NET13 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f2 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f3 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f2 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f3 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+
+* gt2_6t_nand3_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_nand3_x1_w13_lvt A B C Y VDD VSS
+MM9 Y A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 Y C VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7 Y A NET13 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 NET15 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET13 C NET15 VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_nor2_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_nor2_x1_w13_lvt A B Y VDD VSS
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2 Y B NET22 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET22 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_nor2_x2_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_nor2_x2_w13_lvt A B Y VDD VSS
+MM3 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8 Y B NET26 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET22 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7 NET26 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 Y A NET22 VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_nor2_x3_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_nor2_x3_w13_lvt A B Y VDD VSS
+MM3 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f2 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM10 Y B NET32 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM8 NET26 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET22 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM9 NET32 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7 Y A NET26 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 Y A NET22 VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_nor2_x4_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_nor2_x4_w13_lvt A B Y VDD VSS
+MM3 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f2 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f3 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f2 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f3 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM12 Y B NET38 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM10 Y B NET32 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM8 Y B NET26 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET22 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM11 NET38 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM9 NET32 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7 NET26 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 Y A NET22 VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+
+* gt2_6t_nor3_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_nor3_x1_w13_lvt A B C Y VDD VSS
+MM9 Y C VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 Y B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM7 NET24 C NET22 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 Y B NET24 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET22 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_oa211_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_oa211_x1_w13_lvt A1 A2 B C Y VDD VSS
+MM27 NET69 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM33 Y NET110 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM35 NET110 C VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM28 NET110 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM26 NET110 A1 NET69 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM37 NET117 C VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM29 NET91 B NET117 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM34 Y NET110 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM31 NET110 A1 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM30 NET110 A2 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_oa21_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_oa21_x1_w13_lvt A1 A2 B Y VDD VSS
+MM33 Y NET98 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM27 NET69 A1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM28 NET98 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM26 NET98 A2 NET69 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 NET91 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM34 Y NET98 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM31 NET98 A2 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM30 NET98 A1 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_oa31_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_oa31_x1_w13_lvt A1 A2 A3 B Y VDD VSS
+MM35 NET69 A3 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM27 NET115 A2 NET69 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM33 Y NET116 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM28 NET116 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM26 NET116 A1 NET115 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 NET91 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM34 Y NET116 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM37 NET116 A3 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM31 NET116 A1 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM30 NET116 A2 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_oai211_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_oai211_x1_w13_lvt A1 A2 B C Y VDD VSS
+MM27 NET69 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM35 Y C VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM28 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM26 Y A1 NET69 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM37 Y C NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM29 NET91 B NET117 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM31 NET117 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM30 NET117 A2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_oai21_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_oai21_x1_w13_lvt A1 A2 B Y VDD VSS
+MM27 Y A1 NET69 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM28 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM26 NET69 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 Y B NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM31 NET91 A2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM30 NET91 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+
+* gt2_6t_oai21_xp5_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_oai21_x2_w13_lvt A1 A2 B Y VDD VSS
+MM2 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1 Y A2 NET27 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 Y A2 NET27 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET27 A1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 NET27 A1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM6 Y B NET11 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM6_f1 Y B NET11 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM5 NET11 A2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM5_f1 NET11 A2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM4 NET11 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM4_f1 NET11 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_oai22_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_oai22_x1_w13_lvt A1 A2 B1 B2 Y VDD VSS
+MM35 NET101 B2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM27 NET69 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM28 Y B1 NET101 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM26 Y A1 NET69 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM37 Y B2 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM29 Y B1 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM31 NET91 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM30 NET91 A2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+
+* gt2_6t_oai31_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_oai31_x1_w13_lvt A1 A2 A3 B Y VDD VSS
+MM35 NET115 A3 NET69 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM28 Y B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM27 NET69 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM26 Y A1 NET115 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 Y B NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM37 NET91 A3 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM31 NET91 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM30 NET91 A2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_oai32_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_oai32_x1_w13_lvt A1 A2 A3 B1 B2 Y VDD VSS
+MM40 NET122 B2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM35 NET115 A3 NET69 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM27 NET69 A2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM28 Y B1 NET122 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM26 Y A1 NET115 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM29 Y B1 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM38 Y B2 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM37 NET91 A3 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM31 NET91 A1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM30 NET91 A2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_oai33_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_oai33_x1_w13_lvt A1 A2 A3 B1 B2 B3 Y VDD VSS
+MM42 NET133 B3 NET122 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM35 NET115 A3 NET69 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM40 NET122 B2 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM27 Y A2 NET115 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM28 Y B1 NET133 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM26 NET69 A1 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM38 NET91 B3 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM41 NET91 B2 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM29 NET91 B1 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM37 Y A3 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM31 Y A1 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM30 Y A2 NET91 VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_or2_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_or2_x1_w13_lvt A B Y VDD VSS
+MM8 Y NET27 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 NET27 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET27 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM7 Y NET27 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET27 A NET31 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET31 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_or2_x2_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_or2_x2_w13_lvt A B Y VDD VSS
+MM8 Y NET27 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f1 Y NET27 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 NET27 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET27 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM7 Y NET27 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f1 Y NET27 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET31 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET27 B NET31 VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_or2_x3_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_or2_x3_w13_lvt A B Y VDD VSS
+MM8 Y NET27 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f1 Y NET27 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f2 Y NET27 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 NET27 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET27 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM7 Y NET27 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f1 Y NET27 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f2 Y NET27 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET27 A NET31 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET31 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_or2_x4_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_or2_x4_w13_lvt A B Y VDD VSS
+MM8 Y NET27 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f1 Y NET27 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f2 Y NET27 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8_f3 Y NET27 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 NET27 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET27 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM7 Y NET27 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f1 Y NET27 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f2 Y NET27 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f3 Y NET27 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET31 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET27 B NET31 VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_or3_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_or3_x1_w13_lvt A B C Y VDD VSS
+MM8 Y NET36 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM10 NET36 C VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 NET36 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET36 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM7 Y NET36 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM9 NET31 C VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM2 NET36 B NET37 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM0 NET37 A NET31 VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_or4_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_or4_x1_w13_lvt A B C D Y VDD VSS
+MM9 Y NET12 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM9_f1 Y NET12 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3 NET12 D VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM3_f1 NET12 D VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2 NET12 C VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM2_f1 NET12 C VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1 NET12 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM1_f1 NET12 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0 NET12 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM0_f1 NET12 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM8 Y NET12 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM8_f1 Y NET12 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7 NET12 A PD1 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM7_f1 NET12 A PD1 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM6 PD1 B PD2 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM6_f1 PD1 B PD2 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM5 PD2 C PD3 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM5_f1 PD2 C PD3 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM4 PD3 D VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM4_f1 PD3 D VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+
+* gt2_6t_xnor2_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_xnor2_x1_w13_lvt A B Y VDD VSS
+MM27 NET69 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM28 Y NET84 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM26 Y B NET69 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM25 NET84 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM22 NET84 B VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM31 Y B NET81 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM30 Y A NET81 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM29 NET81 NET84 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM24 NET60 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM23 NET84 A NET60 VSS nmos_lvt W=0.013u L=0.014u M=1
+.ENDS
+
+* gt2_6t_xor2_x1_w13_lvt (GT2N standard cell)
+.SUBCKT gt2_7t_xor2_x1_w13_lvt A B Y VDD VSS
+MM18 NET41 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM19 Y NET24 VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM17 Y A NET41 VSS nmos_lvt W=0.013u L=0.014u M=1
+MM13 NET24 A VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM11 NET24 B VSS VSS nmos_lvt W=0.013u L=0.014u M=1
+MM16 NET33 NET24 VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM12 NET23 A VDD VDD pmos_lvt W=0.013u L=0.014u M=1
+MM15 Y A NET33 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM14 Y B NET33 VDD pmos_lvt W=0.013u L=0.014u M=1
+MM10 NET24 B NET23 VDD pmos_lvt W=0.013u L=0.014u M=1
+.ENDS
