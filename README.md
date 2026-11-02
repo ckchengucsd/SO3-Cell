@@ -48,14 +48,10 @@ Remap logic and check output polarity, physical sites and timing constraints;
 do not simply rename existing instances. Keep the corrected addon cell available
 if validated while excluding the baseline Full Adders below.
 
-See [the Fusion Compiler addon setup example](Framework/BlockDesign/SO3_L3/ADDON.md)
-for using the addon alongside L3.
-
 ## Fusion Compiler — Full Adder dont_use Requirement
 
 **Mandatory: exclude the original baseline Full Adder implementations in 
-L2 and L3 from Fusion Compiler synthesis and implementation. This requirement
-does not exclude the corrected `SO3_L3_addon/FA_X1_NEW`.**
+L2 and L3 from Fusion Compiler synthesis and implementation.
 
 | Baseline Liberty library | Full Adder cell |
 | --- | --- |
