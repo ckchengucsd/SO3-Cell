@@ -1,0 +1,49 @@
+* Selected Orville r20, SH dummy_ideal=1 misalign=0.
+.SUBCKT PREFIXADD_X1 G1 P1 G0 P0 VDD VSS G_OUT P_OUT
+MM0 n1 G1 VSS VSS nmos_rvt w=46.0n l=16n nfin=2
+MM1 VSS P1 n2 VSS nmos_rvt w=46.0n l=16n nfin=2
+MM2 VSS P0 n3 VSS nmos_rvt w=46.0n l=16n nfin=2
+MM3 n2 G0 n1 VSS nmos_rvt w=46.0n l=16n nfin=2
+MM4 n3 P1 n4 VSS nmos_rvt w=46.0n l=16n nfin=2
+MM5 n5 G1 VDD VDD pmos_rvt w=46.0n l=16n nfin=2
+MM6 n4 P1 VDD VDD pmos_rvt w=46.0n l=16n nfin=2
+MM7 n4 P0 VDD VDD pmos_rvt w=46.0n l=16n nfin=2
+MM8 n5 G0 n1 VDD pmos_rvt w=46.0n l=16n nfin=2
+MM9 n1 P1 n5 VDD pmos_rvt w=46.0n l=16n nfin=2
+MM10 G_OUT n1 VSS VSS nmos_rvt w=46.0n l=16n nfin=2
+MM11 P_OUT n4 VSS VSS nmos_rvt w=46.0n l=16n nfin=2
+MM12 G_OUT n1 VDD VDD pmos_rvt w=46.0n l=16n nfin=2
+MM13 P_OUT n4 VDD VDD pmos_rvt w=46.0n l=16n nfin=2
+.ENDS PREFIXADD_X1
+
+* Optimized topology reconstructed independently from FA_X1_COS placement rows.
+.SUBCKT FA_X1_NEW A B CI CO S VDD VSS
+M0 net25 A VSS VSS nmos_rvt w=46n l=16n nfin=2
+M1 VSS B net25 VSS nmos_rvt w=46n l=16n nfin=2
+M2 net25 CI CON VSS nmos_rvt w=46n l=16n nfin=2
+M3 CON A net36 VSS nmos_rvt w=46n l=16n nfin=2
+M4 net36 B VSS VSS nmos_rvt w=46n l=16n nfin=2
+M5 VSS A net067 VSS nmos_rvt w=46n l=16n nfin=2
+M6 net067 B VSS VSS nmos_rvt w=46n l=16n nfin=2
+M7 net27 A VDD VDD pmos_rvt w=46n l=16n nfin=2
+M8 VDD B net27 VDD pmos_rvt w=46n l=16n nfin=2
+M9 net27 CI CON VDD pmos_rvt w=46n l=16n nfin=2
+M10 CON A net37 VDD pmos_rvt w=46n l=16n nfin=2
+M11 net37 B VDD VDD pmos_rvt w=46n l=16n nfin=2
+M12 VDD A net027 VDD pmos_rvt w=46n l=16n nfin=2
+M13 net027 B VDD VDD pmos_rvt w=46n l=16n nfin=2
+M14 S SN VDD VDD pmos_rvt w=46n l=16n nfin=2
+M15 VDD B net082 VDD pmos_rvt w=46n l=16n nfin=2
+M16 net082 CI net081 VDD pmos_rvt w=46n l=16n nfin=2
+M17 net081 A SN VDD pmos_rvt w=46n l=16n nfin=2
+M18 SN CON net027 VDD pmos_rvt w=46n l=16n nfin=2
+M19 net027 CI VDD VDD pmos_rvt w=46n l=16n nfin=2
+M20 VDD CON CO VDD pmos_rvt w=46n l=16n nfin=2
+M21 S SN VSS VSS nmos_rvt w=46n l=16n nfin=2
+M22 VSS B net079 VSS nmos_rvt w=46n l=16n nfin=2
+M23 net079 CI net080 VSS nmos_rvt w=46n l=16n nfin=2
+M24 net080 A SN VSS nmos_rvt w=46n l=16n nfin=2
+M25 SN CON net067 VSS nmos_rvt w=46n l=16n nfin=2
+M26 net067 CI VSS VSS nmos_rvt w=46n l=16n nfin=2
+M27 VSS CON CO VSS nmos_rvt w=46n l=16n nfin=2
+.ENDS FA_X1_NEW
